@@ -1999,7 +1999,7 @@ const updateFinanceData = (data) => {
             loan_type: asset.container2?.column1?.finance_loan_type,
             loan_balance: asset.container2?.column2?.finance_loan_balance,
             rate: asset.container2?.column2?.finance_rate,
-            // Also show the raw structure for debugging
+            // Also show the raw structure for debugging test
             rawStructure: asset
           });
         });
