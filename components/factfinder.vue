@@ -69,7 +69,7 @@
           ]"
           :labels="{
             previous: 'Goals',
-            next: 'FInance',
+            next: 'Finance',
           }"
         />
         <FormStep
@@ -161,13 +161,13 @@
                     description: '',
                   },
                   {
-                    value: '2',
+                    value: 2,
                     label:
                       'Understand the basics of investment property principals but unsure the best way forward',
                     description: null,
                   },
                   {
-                    value: '3',
+                    value: 3,
                     label:
                       'Experienced Investor and understand the various factors that influence performance',
                     description: null,
@@ -193,15 +193,15 @@
                     label: '3-5%',
                   },
                   {
-                    value: '2',
+                    value: 2,
                     label: '5-7%',
                   },
                   {
-                    value: '3',
+                    value: 3,
                     label: '7-10%',
                   },
                   {
-                    value: '4',
+                    value: 4,
                     label: '10%+',
                   },
                 ]"
@@ -216,19 +216,19 @@
                 view="tabs"
                 :items="[
                   {
-                    value: '0',
+                    value: 0,
                     label: '6 Months',
                   },
                   {
-                    value: '1',
+                    value: 1,
                     label: '12 Months',
                   },
                   {
-                    value: '2',
+                    value: 2,
                     label: '2 Years',
                   },
                   {
-                    value: '3',
+                    value: 3,
                     label: '2+ Years',
                   },
                 ]"
@@ -401,11 +401,11 @@
                     label: 'Useful',
                   },
                   {
-                    value: '2',
+                    value: 2,
                     label: 'Very Important',
                   },
                   {
-                    value: '3',
+                    value: 3,
                     label: 'Essential',
                   },
                 ]"
@@ -463,7 +463,7 @@
         <TextElement
           name="email"
           input-type="email"
-          :rules="['nullable', 'required', 'email']"
+          :rules="['required', 'email']"
           label="Your Email"
           placeholder="your@email.com.au"
           description="Your business email address."
@@ -472,13 +472,13 @@
           name="privacy"
           text="I accept the terms and condition and the privacy statement."
           :default="true"
-          :rules="['accepted']"
+          :rules="['required', 'accepted']"
         />
         <CheckboxElement
           name="marketing"
           text="I want marketing information."
           :default="true"
-          :rules="['accepted']"
+          :rules="['nullable']"
         />
         <StaticElement name="divider_2" tag="hr" />
         <StaticElement
@@ -501,27 +501,27 @@
           name="goals_q_stage_of_life"
           :items="[
             {
-              value: '0',
+              value: 0,
               label: 'A single person or couple without children',
               description: null,
             },
             {
-              value: '1',
+              value: 1,
               label: 'A single person or couple with young children',
               description: null,
             },
             {
-              value: '2',
+              value: 2,
               label: 'A single person or couple with a mature family',
               description: null,
             },
             {
-              value: '3',
+              value: 3,
               label: 'A single person or couple preparing for retirement',
               description: null,
             },
             {
-              value: '4',
+              value: 4,
               label: 'A retired person or couple',
               description: null,
             },
@@ -554,15 +554,15 @@
                     label: '$1,500',
                   },
                   {
-                    value: '2',
+                    value: 2,
                     label: '$2,000',
                   },
                   {
-                    value: '3',
+                    value: 3,
                     label: '$2,500',
                   },
                   {
-                    value: '4',
+                    value: 4,
                     label: 'More',
                   },
                 ]"
@@ -575,7 +575,7 @@
                 label="How much?"
                 :rules="['nullable']"
                 :conditions="[
-                  ['goals_list.*.goals_q_1_amount_per_week', 'in', ['4']],
+                  ['goals_list.*.goals_q_1_amount_per_week', 'in', [4]],
                 ]"
               />
               <StaticElement
@@ -601,18 +601,18 @@
                     description: '',
                   },
                   {
-                    value: '2',
+                    value: 2,
                     label: 'You have an SMSF and wish to invest in property',
                     description: null,
                   },
                   {
-                    value: '3',
+                    value: 3,
                     label:
                       'You have a specific objective you wish to create additional funds for',
                     description: null,
                   },
                   {
-                    value: '4',
+                    value: 4,
                     label:
                       'You want a regular income stream from property investment',
                     description: null,
@@ -639,15 +639,15 @@
                     label: '10 yrs',
                   },
                   {
-                    value: '2',
+                    value: 2,
                     label: '15 yrs',
                   },
                   {
-                    value: '3',
+                    value: 3,
                     label: '20 yrs',
                   },
                   {
-                    value: '4',
+                    value: 4,
                     label: '25 yrs',
                   },
                 ]"
@@ -703,19 +703,19 @@
                       'You have a general understanding of investment property markets, but would like to have a broader understanding in order to explore the possibilities. You are prepared to accept moderate level of risk to achieve possible gains.',
                   },
                   {
-                    value: '3',
+                    value: 3,
                     label: 'Balanced',
                     description:
                       'You have a reasonable understanding of the property investment market. When you think in terms of risk you think in terms of possibilities. You are a moderate risk taker and can accept some moderate levels of investment risk.',
                   },
                   {
-                    value: '4',
+                    value: 4,
                     label: 'Assertive',
                     description:
                       'You are a growth investor and are seeking capital growth. You are prepared to accept higher volatility and moderate risk to achieve your goals.',
                   },
                   {
-                    value: '5',
+                    value: 5,
                     label: 'Aggressive',
                     description:
                       'You are a high growth investor prepared to compromise portfolio balance to pursure potentially greater longer term returns. Security of capital is secondary to the potential for wealth creation.',
@@ -732,7 +732,12 @@
           align="center"
         />
         <StaticElement name="divider_4" tag="hr" />
-        <TextElement name="personal_address" label="Address" />
+        <TextElement
+          name="personal_address"
+          label="Address"
+          :rules="['required']"
+          placeholder="Enter your full address"
+        />
         <GroupElement name="container3">
           <GroupElement
             name="column1"
@@ -740,7 +745,12 @@
               container: 6,
             }"
           >
-            <TextElement name="personal_city" label="City" />
+            <TextElement
+              name="personal_city"
+              label="City"
+              :rules="['required']"
+              placeholder="Enter city"
+            />
           </GroupElement>
           <GroupElement
             name="column2"
@@ -837,8 +847,18 @@
               container: 6,
             }"
           >
-            <TextElement name="personal_first_name" label="First Name" />
-            <TextElement name="personal_last_name" label="Last Name" />
+            <TextElement
+              name="personal_first_name"
+              label="First Name"
+              :rules="['required']"
+              placeholder="Enter first name"
+            />
+            <TextElement
+              name="personal_last_name"
+              label="Last Name"
+              :rules="['required']"
+              placeholder="Enter last name"
+            />
           </GroupElement>
           <GroupElement
             name="column2"
@@ -846,11 +866,26 @@
               container: 6,
             }"
           >
-            <TextElement name="personal_middle_name" label="Middle Name" />
-            <TextElement name="personal_phone_1" label="Phone" />
+            <TextElement
+              name="personal_middle_name"
+              label="Middle Name"
+              placeholder="Enter middle name (optional)"
+            />
+            <TextElement
+              name="personal_phone_1"
+              label="Phone"
+              :rules="['required']"
+              input-type="tel"
+              placeholder="Enter phone number"
+            />
           </GroupElement>
         </GroupElement>
-        <TextElement name="personal_email" label="Email" />
+        <TextElement
+          name="personal_email"
+          label="Email"
+          input-type="email"
+          :rules="['nullable', 'email']"
+        />
         <TextElement
           name="personal_income"
           input-type="text"
@@ -893,6 +928,7 @@
               load-format="DD/MM/YYYY"
               :input-type="'text'"
               placeholder="dd/mm/yyyy"
+              :rules="['nullable']"
             />
           </GroupElement>
           <GroupElement
@@ -956,7 +992,12 @@
             <TextElement name="partner_phone" label="Phone" />
           </GroupElement>
         </GroupElement>
-        <TextElement name="partner_email" label="Email" />
+        <TextElement
+          name="partner_email"
+          label="Email"
+          input-type="email"
+          :rules="['nullable', 'email']"
+        />
         <TextElement
           name="partner_income"
           input-type="text"
@@ -1250,11 +1291,11 @@
                         label: 'Credit Card',
                       },
                       {
-                        value: '1',
+                        value: 1,
                         label: 'Store Card',
                       },
                       {
-                        value: '2',
+                        value: 2,
                         label: 'Loan',
                       },
                     ]"
@@ -1331,7 +1372,7 @@
                       [
                         'finance_liabilities_list.*.container3.column1.finance_liability_type',
                         'in',
-                        ['2'],
+                        [2],
                       ],
                     ]"
                   />
@@ -1467,17 +1508,17 @@ const handleSubmit = async () => {
       
       return propertyList.map((property, index) => ({
         applicant_number: index + 1,
-        property_q_1_familar: property.property_q_1_familar || null,
-        property_q_2_growth: property.property_q_2_growth || null,
-        property_q_3_wait: property.property_q_3_wait || null,
+        property_q_1_familar: property.property_q_1_familar ? property.property_q_1_familar.toString() : null,
+        property_q_2_growth: property.property_q_2_growth ? property.property_q_2_growth.toString() : null,
+        property_q_3_wait: property.property_q_3_wait ? property.property_q_3_wait.toString() : null,
         property_q_4_type_preferences: property['property_q-4_type_preferences'] || null,
         property_q_4_types_of_investment: property.property_q_4_types_of_investment || null,
         property_q_4_investment_preference_comment: property.property_q_4_investment_preference_comment || null,
         property_q_5_location_preference: property.property_q_5_location_preference || null,
         property_q_5_preference_location_states: property.property_q_5_preference_location_states || null,
         property_q_5_preference_location_states_other: property.property_q_5_preference_location_states_other || null,
-        property_q_6_taxation: property.property_q_6_taxation || null,
-        property_q_7_gearing: property.property_q_7_gearing || null
+        property_q_6_taxation: property.property_q_6_taxation ? property.property_q_6_taxation.toString() : null,
+        property_q_7_gearing: property.property_q_7_gearing ? property.property_q_7_gearing.toString() : null
       }));
     };
     
@@ -1533,16 +1574,25 @@ const handleSubmit = async () => {
         
         // Goals Section
         goals: {
-          stage_of_life: formData.goals_q_stage_of_life || '0',
-          goals_list: formData.goals_list || []
+          stage_of_life: (formData.goals_q_stage_of_life || 0).toString(),
+          goals_list: formData.goals_list ? formData.goals_list.map(goal => ({
+            ...goal,
+            // Ensure numeric values are converted to strings where needed
+            goals_q_1_amount_per_week: (goal.goals_q_1_amount_per_week || 0).toString(),
+            goals_q_3_time_frame: (goal.goals_q_3_time_frame || 0).toString(),
+            goals_q_6_profile: (goal.goals_q_6_profile || 0).toString()
+          })) : []
         },
         
         // Finance Section
         finance: {
           assets_list: formData.finance_assets_list ? formData.finance_assets_list.map(asset => ({
             ...asset,
-            finance_value: processCurrencyField(asset.finance_value),
-            finance_loan_balance: processCurrencyField(asset.finance_loan_balance)
+            // Handle nested structure for property assets
+            finance_value: processCurrencyField(asset.container2?.column1?.finance_value || asset.finance_value),
+            finance_loan_balance: processCurrencyField(asset.container2?.column2?.finance_loan_balance || asset.finance_loan_balance),
+            finance_loan_type: asset.container2?.column1?.finance_loan_type || asset.finance_loan_type,
+            finance_rate: asset.container2?.column2?.finance_rate || asset.finance_rate
           })) : [],
           
           other_assets_list: formData.finance_other_assets_list ? formData.finance_other_assets_list.map(asset => ({
@@ -1560,7 +1610,15 @@ const handleSubmit = async () => {
         
         // Property Section - CRITICAL: Ensure all property answers are saved
         property: {
-          property_list: formData.property_list || [],
+          property_list: formData.property_list ? formData.property_list.map(property => ({
+            ...property,
+            // Ensure numeric values are converted to strings
+            property_q_1_familar: property.property_q_1_familar ? property.property_q_1_familar.toString() : null,
+            property_q_2_growth: property.property_q_2_growth ? property.property_q_2_growth.toString() : null,
+            property_q_3_wait: property.property_q_3_wait ? property.property_q_3_wait.toString() : null,
+            property_q_6_taxation: property.property_q_6_taxation ? property.property_q_6_taxation.toString() : null,
+            property_q_7_gearing: property.property_q_7_gearing ? property.property_q_7_gearing.toString() : null
+          })) : [],
           property_answers: processPropertyAnswers(formData.property_list)
         },
         
@@ -1570,7 +1628,7 @@ const handleSubmit = async () => {
       },
       
       // Legacy format for backward compatibility
-      stage_of_life: formData.goals_q_stage_of_life || '0',
+      stage_of_life: (formData.goals_q_stage_of_life || 0).toString(),
       property_answers: processPropertyAnswers(formData.property_list),
       personal_income: processCurrencyField(formData.personal_income),
       partner_income: processCurrencyField(formData.partner_income),
@@ -1579,7 +1637,64 @@ const handleSubmit = async () => {
       raw_form_data: formData
     };
     
-    console.log("Submitting comprehensive data to FactFindController.php:", submitData);
+    // === COMPREHENSIVE API DATA MONITOR ===
+    console.log("🚀 === API SUBMISSION MONITOR START ===");
+    console.log("📊 Raw Form Data:", JSON.stringify(formData, null, 2));
+    console.log("📦 Processed Submit Data:", JSON.stringify(submitData, null, 2));
+    
+    // Monitor specific sections
+    console.log("👤 Personal Data:", submitData.form_data.personal);
+    console.log("💑 Partner Data:", submitData.form_data.partner);
+    console.log("🎯 Goals Data:", submitData.form_data.goals);
+    console.log("💰 Finance Data:", {
+      assets_count: submitData.form_data.finance.assets_list.length,
+      other_assets_count: submitData.form_data.finance.other_assets_list.length,
+      liabilities_count: submitData.form_data.finance.liabilities_list.length,
+      assets_list: submitData.form_data.finance.assets_list,
+      other_assets_list: submitData.form_data.finance.other_assets_list,
+      liabilities_list: submitData.form_data.finance.liabilities_list
+    });
+    console.log("🏠 Property Data:", {
+      property_list_count: submitData.form_data.property.property_list.length,
+      property_answers_count: submitData.form_data.property.property_answers.length,
+      property_list: submitData.form_data.property.property_list,
+      property_answers: submitData.form_data.property.property_answers
+    });
+    
+    // Monitor data types for validation-sensitive fields
+    console.log("🔍 Data Type Analysis:");
+    if (submitData.form_data.goals.goals_list.length > 0) {
+      const goal = submitData.form_data.goals.goals_list[0];
+      console.log("Goals field types:", {
+        goals_q_1_amount_per_week: typeof goal.goals_q_1_amount_per_week,
+        goals_q_3_time_frame: typeof goal.goals_q_3_time_frame,
+        goals_q_6_profile: typeof goal.goals_q_6_profile
+      });
+    }
+    
+    if (submitData.form_data.property.property_list.length > 0) {
+      const property = submitData.form_data.property.property_list[0];
+      console.log("Property field types:", {
+        property_q_1_familar: typeof property.property_q_1_familar,
+        property_q_2_growth: typeof property.property_q_2_growth,
+        property_q_3_wait: typeof property.property_q_3_wait,
+        property_q_6_taxation: typeof property.property_q_6_taxation,
+        property_q_7_gearing: typeof property.property_q_7_gearing
+      });
+    }
+    
+    // Monitor request details
+    console.log("🌐 API Request Details:", {
+      url: url + "/api/generate-pdf",
+      method: "POST",
+      headers: {
+        'Authorization': 'Bearer ' + tokenFromUrl.value?.substring(0, 20) + '...',
+        'Accept': 'application/json'
+      },
+      data_size: JSON.stringify(submitData).length + ' characters'
+    });
+    
+    console.log("📤 Sending request to API...");
     
     const response = await axios.post(
       url+"/api/generate-pdf",
@@ -1591,13 +1706,62 @@ const handleSubmit = async () => {
         },
       }
     );
-    console.log("FactFindController.php response:", response.data);
+    
+    console.log("📥 API Response Received:");
+    console.log("✅ Status:", response.status);
+    console.log("📋 Response Data:", response.data);
+    console.log("📊 Response Headers:", response.headers);
+    console.log("🚀 === API SUBMISSION MONITOR END ===");
     message = response.data.message;
     responseURL.value = response.data.url;
     ok.value = true;
   } catch (error) {
-    console.error("ERROR submitting to FactFindController.php:", error);
-    console.error("Error details:", error.response?.data);
+    console.log("❌ === API ERROR MONITOR START ===");
+    console.error("🚨 ERROR submitting to FactFindController.php:", error);
+    
+    if (error.response) {
+      // Server responded with error status
+      console.error("📊 Error Response Status:", error.response.status);
+      console.error("📋 Error Response Data:", JSON.stringify(error.response.data, null, 2));
+      console.error("📊 Error Response Headers:", error.response.headers);
+      
+      // Detailed validation error analysis
+      if (error.response.data?.errors) {
+        console.log("🔍 Validation Errors Analysis:");
+        Object.entries(error.response.data.errors).forEach(([field, messages]) => {
+          console.error(`❌ Field: ${field}`);
+          console.error(`   Messages: ${JSON.stringify(messages)}`);
+          
+          // Try to find the actual value being sent
+          const fieldPath = field.replace('form_data.', '').split('.');
+          let value = submitData.form_data;
+          try {
+            for (const path of fieldPath) {
+              if (path.includes('[') && path.includes(']')) {
+                // Handle array notation like goals_list[0]
+                const [arrayName, indexStr] = path.split('[');
+                const index = parseInt(indexStr.replace(']', ''));
+                value = value[arrayName][index];
+              } else {
+                value = value[path];
+              }
+            }
+            console.error(`   Actual value sent: ${JSON.stringify(value)} (type: ${typeof value})`);
+          } catch (pathError) {
+            console.error(`   Could not trace field path: ${field}`);
+          }
+        });
+      }
+    } else if (error.request) {
+      // Request was made but no response received
+      console.error("📡 Network Error - No response received:", error.request);
+    } else {
+      // Something else happened
+      console.error("⚠️ Request Setup Error:", error.message);
+    }
+    
+    console.error("🔧 Error Config:", error.config);
+    console.log("❌ === API ERROR MONITOR END ===");
   }
 };
 const updatePersonalData = (data) => {
@@ -1690,7 +1854,7 @@ const updateGoalsData = (data) => {
     };
     
     form$.value.update({
-      goals_q_stage_of_life: goal.stage || '0',
+      goals_q_stage_of_life: (goal.stage || 0).toString(),
       goals_list: [{
         goals_q_1_amount_per_week: mapWeeklyAmount(goal.required_amount),
         goals_q_1_amount_per_week_other: goal.required_amount_other || 0,
@@ -1718,10 +1882,30 @@ const updateFinanceData = (data) => {
   if (data.form_data && data.form_data.finance) {
     console.log("Found saved form_data.finance:", data.form_data.finance);
     
-    // Load saved property assets
+    // Load saved property assets - ensure they have the correct nested structure
     if (data.form_data.finance.assets_list && data.form_data.finance.assets_list.length > 0) {
-      financeUpdate.finance_assets_list = data.form_data.finance.assets_list;
-      console.log("Loaded property assets from form_data:", financeUpdate.finance_assets_list);
+      financeUpdate.finance_assets_list = data.form_data.finance.assets_list.map(asset => {
+        // If the asset already has the correct nested structure, use it
+        if (asset.container2) {
+          return asset;
+        }
+        
+        // If it's flat structure, convert to nested
+        return {
+          finance_address: asset.finance_address,
+          container2: {
+            column1: {
+              finance_value: asset.finance_value,
+              finance_loan_type: asset.finance_loan_type
+            },
+            column2: {
+              finance_loan_balance: asset.finance_loan_balance,
+              finance_rate: asset.finance_rate
+            }
+          }
+        };
+      });
+      console.log("Loaded and structured property assets from form_data:", financeUpdate.finance_assets_list);
     }
     
     // Load saved other assets
@@ -1839,15 +2023,9 @@ const updateFinanceData = (data) => {
             loanType
           });
           
-          // Try both flat and nested structure to see which works
+          // Create the correct nested structure that matches the form template
           const formattedAsset = {
             finance_address: asset.description,
-            // Flat structure (original approach)
-            finance_value: formatCurrency(parsedValue),
-            finance_loan_balance: formatCurrency(parsedLoanBalance),
-            finance_loan_type: loanType?.toString().includes('Fixed') ? 'Fixed' : 'Variable',
-            finance_rate: parsedInterestRate,
-            // Nested structure (for GroupElements)
             container2: {
               column1: {
                 finance_value: formatCurrency(parsedValue),
@@ -1939,15 +2117,15 @@ const updateFinanceData = (data) => {
       const liabilities = data.liabilities.map(liability => {
         // Map loan types
         const loanTypeMap = {
-          'Credit Card': '0',
-          'Store Card': '1',
-          'Home Loan': '2',
-          'Personal Loan': '2',
-          'Car Loan': '2'
+          'Credit Card': 0,
+          'Store Card': 1,
+          'Home Loan': 2,
+          'Personal Loan': 2,
+          'Car Loan': 2
         };
         
         return {
-          finance_liability_type: loanTypeMap[liability.loan_type] || '2',
+          finance_liability_type: loanTypeMap[liability.loan_type] || 2,
           finance_liability_limit: formatCurrency(parseFloat(liability.value) || 0),
           finance_liability_balance: formatCurrency(parseFloat(liability.balance) || 0),
           finance_liability_description: liability.description,
@@ -1979,32 +2157,308 @@ const updateFinanceData = (data) => {
     console.log("Updating form with finance data...");
     console.log("Data being sent to form:", JSON.stringify(financeUpdate, null, 2));
     
+    // Direct update with the finance data
     form$.value.update(financeUpdate);
     
-    // Force a re-render by checking the current form data after update
+    console.log("=== DEBUGGING FORM UPDATE ===");
+    console.log("Finance assets being updated:", financeUpdate.finance_assets_list);
+    
+    // Force DOM element updates for all property assets
+    setTimeout(() => {
+      if (financeUpdate.finance_assets_list && financeUpdate.finance_assets_list.length > 0) {
+        console.log("🔧 Forcing DOM element updates...");
+        
+        financeUpdate.finance_assets_list.forEach((asset, index) => {
+          if (asset.container2) {
+            try {
+              // Get the actual DOM elements and set their values directly
+              const valueInput = document.getElementById(`finance_assets_list.${index}.container2.column1.finance_value`);
+              const loanTypeInputs = document.querySelectorAll(`input[name="finance_assets_list.${index}.container2.column1.finance_loan_type"]`);
+              const loanBalanceInput = document.getElementById(`finance_assets_list.${index}.container2.column2.finance_loan_balance`);
+              const rateInput = document.getElementById(`finance_assets_list.${index}.container2.column2.finance_rate`);
+              
+              console.log(`Property ${index + 1} DOM elements:`, {
+                valueInput: !!valueInput,
+                loanTypeInputs: loanTypeInputs.length,
+                loanBalanceInput: !!loanBalanceInput,
+                rateInput: !!rateInput
+              });
+              
+              // Set values directly on DOM elements
+              if (valueInput && asset.container2.column1.finance_value) {
+                valueInput.value = asset.container2.column1.finance_value;
+                valueInput.dispatchEvent(new Event('input', { bubbles: true }));
+                console.log(`✅ Set value for property ${index + 1}: ${asset.container2.column1.finance_value}`);
+              }
+              
+              if (loanBalanceInput && asset.container2.column2.finance_loan_balance) {
+                loanBalanceInput.value = asset.container2.column2.finance_loan_balance;
+                loanBalanceInput.dispatchEvent(new Event('input', { bubbles: true }));
+                console.log(`✅ Set loan balance for property ${index + 1}: ${asset.container2.column2.finance_loan_balance}`);
+              }
+              
+              if (rateInput && asset.container2.column2.finance_rate) {
+                rateInput.value = asset.container2.column2.finance_rate;
+                rateInput.dispatchEvent(new Event('input', { bubbles: true }));
+                console.log(`✅ Set rate for property ${index + 1}: ${asset.container2.column2.finance_rate}`);
+              }
+              
+              // Handle radio buttons for loan type
+              if (loanTypeInputs.length > 0 && asset.container2.column1.finance_loan_type) {
+                loanTypeInputs.forEach(input => {
+                  if (input.value === asset.container2.column1.finance_loan_type) {
+                    input.checked = true;
+                    input.dispatchEvent(new Event('change', { bubbles: true }));
+                    console.log(`✅ Set loan type for property ${index + 1}: ${asset.container2.column1.finance_loan_type}`);
+                  }
+                });
+              }
+              
+            } catch (error) {
+              console.error(`❌ Error updating DOM for property ${index + 1}:`, error);
+            }
+          }
+        });
+      }
+      
+      // Force DOM element updates for other assets
+      if (financeUpdate.finance_other_assets_list && financeUpdate.finance_other_assets_list.length > 0) {
+        console.log("🔧 Forcing DOM element updates for other assets...");
+        
+        financeUpdate.finance_other_assets_list.forEach((asset, index) => {
+          try {
+            // Get the actual DOM elements and set their values directly
+            const typeSelect = document.getElementById(`finance_other_assets_list.${index}.container2.column1.finance_other_asset_description`);
+            const descriptionInput = document.getElementById(`finance_other_assets_list.${index}.container2.column2.finance_other_asset_description_name`);
+            const amountInput = document.getElementById(`finance_other_assets_list.${index}.container2.column2.finance_other_asset_amount`);
+            const otherDescInput = document.getElementById(`finance_other_assets_list.${index}.container2.column1.finance_other_asset_other_description`);
+            
+            console.log(`Other Asset ${index + 1} DOM elements:`, {
+              typeSelect: !!typeSelect,
+              descriptionInput: !!descriptionInput,
+              amountInput: !!amountInput,
+              otherDescInput: !!otherDescInput
+            });
+            
+            // Debug the select element structure
+            if (typeSelect) {
+              console.log(`🔍 Other Asset ${index + 1} Select Element Debug:`, {
+                tagName: typeSelect.tagName,
+                type: typeSelect.type,
+                value: typeSelect.value,
+                innerHTML: typeSelect.innerHTML.substring(0, 200) + '...',
+                classList: Array.from(typeSelect.classList),
+                parentElement: typeSelect.parentElement?.tagName
+              });
+            }
+            
+            // Try multiple approaches for select elements
+            if (typeSelect && asset.finance_other_asset_description) {
+              console.log(`🎯 Attempting to set other asset ${index + 1} type to: ${asset.finance_other_asset_description}`);
+              
+              // Approach 1: Direct value setting
+              typeSelect.value = asset.finance_other_asset_description;
+              typeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+              typeSelect.dispatchEvent(new Event('input', { bubbles: true }));
+              
+              // Approach 2: Find and select option
+              const options = typeSelect.querySelectorAll('option');
+              console.log(`Available options for other asset ${index + 1}:`, Array.from(options).map(opt => ({ value: opt.value, text: opt.textContent })));
+              
+              let optionFound = false;
+              options.forEach(option => {
+                if (option.value === asset.finance_other_asset_description) {
+                  option.selected = true;
+                  optionFound = true;
+                  console.log(`✅ Found and selected option: ${option.value}`);
+                }
+              });
+              
+              // Approach 3: Try using Vueform API if available
+              try {
+                const formElement = form$.value?.el$(`finance_other_assets_list.${index}.container2.column1.finance_other_asset_description`);
+                if (formElement) {
+                  console.log(`🔧 Using Vueform API for other asset ${index + 1}`);
+                  formElement.update(asset.finance_other_asset_description);
+                  console.log(`✅ Updated via Vueform API: ${asset.finance_other_asset_description}`);
+                }
+              } catch (vueformError) {
+                console.log(`⚠️ Vueform API approach failed for other asset ${index + 1}:`, vueformError.message);
+              }
+              
+              // Verify the final value
+              setTimeout(() => {
+                console.log(`🔍 Final verification for other asset ${index + 1}: ${typeSelect.value}`);
+              }, 100);
+              
+              console.log(`✅ Set type for other asset ${index + 1}: ${asset.finance_other_asset_description} (found option: ${optionFound})`);
+            }
+            
+            // Approach 4: Delayed retry for Vueform reactivity
+            setTimeout(() => {
+              if (typeSelect && asset.finance_other_asset_description && typeSelect.value !== asset.finance_other_asset_description) {
+                console.log(`🔄 Retrying other asset ${index + 1} type selection after delay...`);
+                typeSelect.value = asset.finance_other_asset_description;
+                typeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                typeSelect.dispatchEvent(new Event('input', { bubbles: true }));
+                
+                // Force focus and blur to trigger Vueform validation
+                typeSelect.focus();
+                typeSelect.blur();
+                
+                console.log(`🔄 Retry result for other asset ${index + 1}: ${typeSelect.value}`);
+              }
+            }, 200);
+            
+            if (descriptionInput && asset.finance_other_asset_description_name) {
+              descriptionInput.value = asset.finance_other_asset_description_name;
+              descriptionInput.dispatchEvent(new Event('input', { bubbles: true }));
+              console.log(`✅ Set description for other asset ${index + 1}: ${asset.finance_other_asset_description_name}`);
+            }
+            
+            if (amountInput && asset.finance_other_asset_amount) {
+              amountInput.value = asset.finance_other_asset_amount;
+              amountInput.dispatchEvent(new Event('input', { bubbles: true }));
+              console.log(`✅ Set amount for other asset ${index + 1}: ${asset.finance_other_asset_amount}`);
+            }
+            
+            if (otherDescInput && asset.finance_other_asset_other_description) {
+              otherDescInput.value = asset.finance_other_asset_other_description;
+              otherDescInput.dispatchEvent(new Event('input', { bubbles: true }));
+              console.log(`✅ Set other description for other asset ${index + 1}: ${asset.finance_other_asset_other_description}`);
+            }
+            
+          } catch (error) {
+            console.error(`❌ Error updating DOM for other asset ${index + 1}:`, error);
+          }
+        });
+      }
+      
+      // Force DOM element updates for liabilities
+      if (financeUpdate.finance_liabilities_list && financeUpdate.finance_liabilities_list.length > 0) {
+        console.log("🔧 Forcing DOM element updates for liabilities...");
+        
+        financeUpdate.finance_liabilities_list.forEach((liability, index) => {
+          try {
+            // Get the actual DOM elements and set their values directly
+            const typeSelect = document.getElementById(`finance_liabilities_list.${index}.container3.column1.finance_liability_type`);
+            const limitInput = document.getElementById(`finance_liabilities_list.${index}.container3.column2.finance_liability_limit`);
+            const balanceInput = document.getElementById(`finance_liabilities_list.${index}.container3.column3.finance_liability_balance`);
+            const descriptionInput = document.getElementById(`finance_liabilities_list.${index}.container2.column1.finance_liability_description`);
+            const repaymentInput = document.getElementById(`finance_liabilities_list.${index}.container2.column2.finance_liability_repayment`);
+            
+            console.log(`Liability ${index + 1} DOM elements:`, {
+              typeSelect: !!typeSelect,
+              limitInput: !!limitInput,
+              balanceInput: !!balanceInput,
+              descriptionInput: !!descriptionInput,
+              repaymentInput: !!repaymentInput
+            });
+            
+            // Set values directly on DOM elements - Special handling for select elements
+            if (typeSelect && liability.finance_liability_type !== undefined) {
+              // For select elements, we need to ensure the option exists and is selected
+              const options = typeSelect.querySelectorAll('option');
+              let optionFound = false;
+              
+              options.forEach(option => {
+                if (option.value == liability.finance_liability_type) { // Use == for type coercion
+                  option.selected = true;
+                  optionFound = true;
+                }
+              });
+              
+              if (optionFound) {
+                typeSelect.value = liability.finance_liability_type;
+                typeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                typeSelect.dispatchEvent(new Event('input', { bubbles: true }));
+                console.log(`✅ Set type for liability ${index + 1}: ${liability.finance_liability_type}`);
+              } else {
+                console.warn(`⚠️ Option not found for liability ${index + 1}: ${liability.finance_liability_type}`);
+                console.log('Available options:', Array.from(options).map(opt => opt.value));
+              }
+            }
+            
+            if (limitInput && liability.finance_liability_limit) {
+              limitInput.value = liability.finance_liability_limit;
+              limitInput.dispatchEvent(new Event('input', { bubbles: true }));
+              console.log(`✅ Set limit for liability ${index + 1}: ${liability.finance_liability_limit}`);
+            }
+            
+            if (balanceInput && liability.finance_liability_balance) {
+              balanceInput.value = liability.finance_liability_balance;
+              balanceInput.dispatchEvent(new Event('input', { bubbles: true }));
+              console.log(`✅ Set balance for liability ${index + 1}: ${liability.finance_liability_balance}`);
+            }
+            
+            if (descriptionInput && liability.finance_liability_description) {
+              descriptionInput.value = liability.finance_liability_description;
+              descriptionInput.dispatchEvent(new Event('input', { bubbles: true }));
+              console.log(`✅ Set description for liability ${index + 1}: ${liability.finance_liability_description}`);
+            }
+            
+            if (repaymentInput && liability.finance_liability_repayment) {
+              repaymentInput.value = liability.finance_liability_repayment;
+              repaymentInput.dispatchEvent(new Event('input', { bubbles: true }));
+              console.log(`✅ Set repayment for liability ${index + 1}: ${liability.finance_liability_repayment}`);
+            }
+            
+          } catch (error) {
+            console.error(`❌ Error updating DOM for liability ${index + 1}:`, error);
+          }
+        });
+      }
+    }, 800);
+    
+    // Verification after update
     setTimeout(() => {
       const currentData = form$.value.data;
-      console.log("Current form data after update:");
-      console.log("- Property assets raw:", JSON.stringify(currentData.finance_assets_list, null, 2));
-      console.log("- Other assets:", currentData.finance_other_assets_list);
-      console.log("- Liabilities:", currentData.finance_liabilities_list);
+      console.log("=== FORM DATA VERIFICATION ===");
+      console.log("Property assets count:", currentData.finance_assets_list?.length || 0);
       
       // Check if the form fields are actually populated
       if (currentData.finance_assets_list && currentData.finance_assets_list.length > 0) {
         currentData.finance_assets_list.forEach((asset, index) => {
-          console.log(`Property ${index + 1}:`, {
-            address: asset.finance_address,
-            // Access nested structure correctly
-            value: asset.container2?.column1?.finance_value,
-            loan_type: asset.container2?.column1?.finance_loan_type,
-            loan_balance: asset.container2?.column2?.finance_loan_balance,
-            rate: asset.container2?.column2?.finance_rate,
-            // Also show the raw structure for debugging test
-            rawStructure: asset
-          });
+          console.log(`\n--- Property Asset ${index + 1} ---`);
+          console.log("Address/Description:", asset.finance_address);
+          console.log("Nested Structure Check:");
+          console.log("  - Value:", asset.container2?.column1?.finance_value);
+          console.log("  - Loan Type:", asset.container2?.column1?.finance_loan_type);
+          console.log("  - Loan Balance:", asset.container2?.column2?.finance_loan_balance);
+          console.log("  - Interest Rate:", asset.container2?.column2?.finance_rate);
+          
+          // Verify the structure is correct
+          if (!asset.container2?.column1?.finance_value && index > 0) {
+            console.warn(`⚠️  Property ${index + 1} missing nested structure data!`);
+            console.log("Raw asset structure:", JSON.stringify(asset, null, 2));
+          } else {
+            console.log(`✅ Property ${index + 1} structure looks correct`);
+          }
         });
       }
-    }, 900);
+      
+      console.log("\nOther assets count:", currentData.finance_other_assets_list?.length || 0);
+      console.log("Liabilities count:", currentData.finance_liabilities_list?.length || 0);
+      console.log("=== END VERIFICATION ===\n");
+      
+      // Additional debugging: Check if form elements exist
+      try {
+        const listElement = form$.value.el$('finance_assets_list');
+        console.log("Finance assets list element exists:", !!listElement);
+        if (listElement) {
+          console.log("List element type:", listElement.type);
+          console.log("List element children type:", typeof listElement.children$);
+          
+          if (listElement.children$ && Array.isArray(listElement.children$)) {
+            console.log("List children count:", listElement.children$.length);
+          } else if (listElement.children$ && typeof listElement.children$ === 'object') {
+            console.log("List children (object):", Object.keys(listElement.children$));
+          }
+        }
+      } catch (error) {
+        console.error("Error accessing form elements:", error);
+      }
+    }, 500);
   }
 };
 
@@ -2105,7 +2559,7 @@ tokenFromUrl.value = token || url.hash.split('token=')[1];
   formId = clientId; // Use client_id from JWT token
   try {
     console.log("Making API request to:", baseUrl);
-   const response = await axios.get(`https://piers.forrestercohen.com/api/clients/${clientId}`, {
+   const response = await axios.get(`${url}/api/clients/${clientId}`, {
       headers: {
         'Authorization': 'Bearer ' + tokenFromUrl.value,
         'Accept': 'application/json'
