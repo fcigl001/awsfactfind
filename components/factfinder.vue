@@ -2559,7 +2559,7 @@ tokenFromUrl.value = token || url.hash.split('token=')[1];
   formId = clientId; // Use client_id from JWT token
   try {
     console.log("Making API request to:", baseUrl);
-   const response = await axios.get(`${url}/api/clients/${clientId}`, {
+   const response = await axios.get(`https://piers.forrestercohen.com/api/clients/${clientId}`, {
       headers: {
         'Authorization': 'Bearer ' + tokenFromUrl.value,
         'Accept': 'application/json'
