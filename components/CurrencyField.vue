@@ -31,7 +31,7 @@
   const internalValue = ref(props.modelValue);
   
   const displayValue = computed(() => {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD',  minimumFractionDigits: 0, }).format(internalValue.value);
+    return new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD',  minimumFractionDigits: 0, }).format(internalValue.value);
   });
   
   watch(() => props.modelValue, (newValue) => {
