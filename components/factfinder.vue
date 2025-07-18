@@ -1014,11 +1014,11 @@
           view="tabs"
           :items="[
             {
-              value: 'PAYG',
+              value: 0,
               label: 'PAYG',
             },
             {
-              value: 'Self Employed',
+              value: 1,
               label: 'Self Employed',
             },
           ]"
@@ -1416,7 +1416,7 @@ import { useRoute } from 'vue-router';
 const form$ = ref(null);
 const prodUrl = "https://piers.forrestercohen.com";
 const devUrl = "https://piers.test";
-const url = process.env.NODE_ENV === "production" ? prodUrl : devUrl;
+const urlAPI = process.env.NODE_ENV === "production" ? prodUrl : devUrl;
 const amount = ref(null);
 const income = ref(null);
 const userIdFromToken = ref(null);
@@ -1685,7 +1685,7 @@ const handleSubmit = async () => {
     
     // Monitor request details
     console.log("🌐 API Request Details:", {
-      url: url + "/api/generate-pdf",
+      url: urlAPI + "/api/generate-pdf",
       method: "POST",
       headers: {
         'Authorization': 'Bearer ' + tokenFromUrl.value?.substring(0, 20) + '...',
@@ -1697,7 +1697,7 @@ const handleSubmit = async () => {
     console.log("📤 Sending request to API...");
     
     const response = await axios.post(
-      url+"/api/generate-pdf",
+      urlAPI+"/api/generate-pdf",
       submitData,
       {
         headers: {
@@ -1713,7 +1713,7 @@ const handleSubmit = async () => {
     console.log("📊 Response Headers:", response.headers);
     console.log("🚀 === API SUBMISSION MONITOR END ===");
     message = response.data.message;
-    responseURL.value = response.data.url;
+    responseURL.value = response.data.url; // DONT KNOW IF THIS IS CORRECT
     ok.value = true;
   } catch (error) {
     console.log("❌ === API ERROR MONITOR START ===");
@@ -2551,15 +2551,15 @@ tokenFromUrl.value = token || url.hash.split('token=')[1];
   var pathName = window.location.pathname;
   var segments = pathName.split("/");
   var lastSegment = segments.pop() || segments.pop(); // handle potential trailing slash
-  console.log(url);
-  const baseUrl = `${url}/api/clients/${clientId}?token=${tokenFromUrl.value}`;
+  console.log(urlAPI);
+  const baseUrl = `${urlAPI}/api/clients/${clientId}?token=${tokenFromUrl.value}`;
   
   //const baseUrl = "http://localhost:3000/clients.json";
   console.log("BASE URL", tokenFromUrl.value, clientId, baseUrl)
   formId = clientId; // Use client_id from JWT token
   try {
     console.log("Making API request to:", baseUrl);
-   const response = await axios.get(`https://piers.forrestercohen.com/api/clients/${clientId}`, {
+   const response = await axios.get(`${urlAPI}/api/clients/${clientId}`, {
       headers: {
         'Authorization': 'Bearer ' + tokenFromUrl.value,
         'Accept': 'application/json'
