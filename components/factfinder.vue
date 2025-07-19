@@ -920,15 +920,13 @@
               container: 6,
             }"
           >
-            <DateElement
+            <TextElement
               name="personal_birth_date"
-              label="Birth Date"
-              display-format="DD/MM/YYYY"
-              value-format="DD/MM/YYYY"
-              load-format="DD/MM/YYYY"
-              :input-type="'text'"
-              placeholder="dd/mm/yyyy"
-              :rules="['nullable']"
+              label="Birth Date (Year)"
+              input-type="number"
+              placeholder="yyyy"
+              :rules="['nullable', 'min:0', 'max:4']"
+              autocomplete="off"
             />
           </GroupElement>
           <GroupElement
@@ -1032,14 +1030,13 @@
                 container: 6,
               }"
             >
-              <DateElement
+              <TextElement
                 name="partner_birth_date"
-                label="Birth Date"
-                display-format="DD/MM/YYYY"
-                value-format="DD/MM/YYYY"
-                load-format="DD/MM/YYYY"
-                :input-type="'text'"
-                placeholder="dd/mm/yyyy"
+                label="Birth Date (Year)"
+                input-type="number"
+                placeholder="yyyy"
+                :rules="['nullable', 'min:0', 'max:4']"
+                autocomplete="off"
               />
             </GroupElement>
             <GroupElement
@@ -1556,6 +1553,7 @@ const handleSubmit = async () => {
           income: processCurrencyField(formData.personal_income),
           employment_type: formData.personal_employment_type || null,
           birth_date: formData.personal_birth_date || null,
+          stage_of_life: parseInt(formData.goals_q_stage_of_life || 0, 10),
           health: formData.personal_health || null
         },
         
@@ -1565,6 +1563,7 @@ const handleSubmit = async () => {
           last_name: formData.partner_last_name || null,
           middle_name: formData.partner_middle_name || null,
           phone: formData.partner_phone || null,
+          phone_1: formData.partner_phone || null, // Ensure partner_phone_1 mapping
           email: formData.partner_email || null,
           income: processCurrencyField(formData.partner_income),
           employment_type: formData.partner_employment_type || null,
@@ -1574,7 +1573,7 @@ const handleSubmit = async () => {
         
         // Goals Section
         goals: {
-          stage_of_life: (formData.goals_q_stage_of_life || 0).toString(),
+          stage_of_life: parseInt(formData.goals_q_stage_of_life || 0, 10),
           goals_list: formData.goals_list ? formData.goals_list.map(goal => ({
             ...goal,
             // Ensure numeric values are converted to strings where needed
@@ -1628,10 +1627,16 @@ const handleSubmit = async () => {
       },
       
       // Legacy format for backward compatibility
-      stage_of_life: (formData.goals_q_stage_of_life || 0).toString(),
+      stage_of_life: parseInt(formData.goals_q_stage_of_life || 0, 10),
       property_answers: processPropertyAnswers(formData.property_list),
       personal_income: processCurrencyField(formData.personal_income),
       partner_income: processCurrencyField(formData.partner_income),
+      
+      // Ensure specific required fields are included
+      goals_q_stage_of_life: parseInt(formData.goals_q_stage_of_life || 0, 10),
+      personal_birth_date: formData.personal_birth_date || null,
+      partner_middle_name: formData.partner_middle_name || null,
+      partner_phone_1: formData.partner_phone || null,
       
       // Raw form data for complete backup
       raw_form_data: formData
@@ -1781,7 +1786,7 @@ const updatePersonalData = (data) => {
     personal_health: data.health,
     personal_payg: data.payg,
     personal_self_employed: data.self_employed,
-    personal_birth_date: data.birth_date,
+    personal_birth_date: data.birth_date ? new Date(data.birth_date).getFullYear().toString() : null,
     
     // Map employment type based on employment field
     personal_employment_type: data.employment === 'Self Employed' ? 1 : 0,
@@ -1804,7 +1809,7 @@ const updateRelatedData = (data) => {
     partner_health: data.health,
     partner_payg: data.payg,
     partner_self_employed: data.self_employed,
-    partner_birth_date: data.birth_date,
+    partner_birth_date: data.birth_date ? new Date(data.birth_date).getFullYear().toString() : null,
   });
 };
 const updateForm = (data) => {
