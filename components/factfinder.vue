@@ -36,6 +36,8 @@
             'personal_address',
             'container3',
             'container2_2',
+            'stage_of_life_question',
+            'stage_of_life',
             'divider_5',
             'h4_2',
             'container2',
@@ -62,8 +64,6 @@
           :elements="[
             'h2',
             'divider_3',
-            'goals_question_1a',
-            'goals_q_stage_of_life',
             'h4_1',
             'goals_list',
           ]"
@@ -491,43 +491,6 @@
           size="sm"
         />
         <StaticElement name="divider_3" tag="hr" />
-        <StaticElement
-          name="goals_question_1a"
-          tag="h4"
-          content="What is you stage of life?"
-          size="xs"
-        />
-        <RadiogroupElement
-          name="goals_q_stage_of_life"
-          :items="[
-            {
-              value: 0,
-              label: 'A single person or couple without children',
-              description: null,
-            },
-            {
-              value: 1,
-              label: 'A single person or couple with young children',
-              description: null,
-            },
-            {
-              value: 2,
-              label: 'A single person or couple with a mature family',
-              description: null,
-            },
-            {
-              value: 3,
-              label: 'A single person or couple preparing for retirement',
-              description: null,
-            },
-            {
-              value: 4,
-              label: 'A retired person or couple',
-              description: null,
-            },
-          ]"
-          view="blocks"
-        />
         <StaticElement name="h4_1" tag="h4" content="Applicant #1"  size="xs"/>
         <ListElement
           name="goals_list"
@@ -838,6 +801,43 @@
             }"
           />
         </GroupElement>
+        <StaticElement
+          name="stage_of_life_question"
+          tag="h4"
+          content="What is your stage of life?"
+          size="xs"
+        />
+        <RadiogroupElement
+          name="stage_of_life"
+          :items="[
+            {
+              value: 0,
+              label: 'A single person or couple without children',
+              description: null,
+            },
+            {
+              value: 1,
+              label: 'A single person or couple with young children',
+              description: null,
+            },
+            {
+              value: 2,
+              label: 'A single person or couple with a mature family',
+              description: null,
+            },
+            {
+              value: 3,
+              label: 'A single person or couple preparing for retirement',
+              description: null,
+            },
+            {
+              value: 4,
+              label: 'A retired person or couple',
+              description: null,
+            },
+          ]"
+          view="blocks"
+        />
         <StaticElement name="divider_5" tag="hr" />
         <StaticElement name="h4_2" tag="h4" content="Person #1 Information" />
         <GroupElement name="container2">
@@ -923,7 +923,7 @@
             <TextElement
               name="personal_birth_date"
               label="Birth Date (Year)"
-              input-type="number"
+              input-type="string"
               placeholder="yyyy"
               :rules="['nullable', 'min:0', 'max:4']"
               autocomplete="off"
@@ -1553,7 +1553,7 @@ const handleSubmit = async () => {
           income: processCurrencyField(formData.personal_income),
           employment_type: formData.personal_employment_type || null,
           birth_date: formData.personal_birth_date || null,
-          stage_of_life: parseInt(formData.goals_q_stage_of_life || 0, 10),
+          stage_of_life:  2, // parseInt(formData.stage_of_life, 10) || 2,
           health: formData.personal_health || null
         },
         
@@ -1573,7 +1573,6 @@ const handleSubmit = async () => {
         
         // Goals Section
         goals: {
-          stage_of_life: parseInt(formData.goals_q_stage_of_life || 0, 10),
           goals_list: formData.goals_list ? formData.goals_list.map(goal => ({
             ...goal,
             // Ensure numeric values are converted to strings where needed
@@ -1627,13 +1626,13 @@ const handleSubmit = async () => {
       },
       
       // Legacy format for backward compatibility
-      stage_of_life: parseInt(formData.goals_q_stage_of_life || 0, 10),
+      stage_of_life: typeof formData.stage_of_life === 'string' ? parseInt(formData.stage_of_life, 10) : (formData.stage_of_life || 0),
       property_answers: processPropertyAnswers(formData.property_list),
       personal_income: processCurrencyField(formData.personal_income),
       partner_income: processCurrencyField(formData.partner_income),
       
       // Ensure specific required fields are included
-      goals_q_stage_of_life: parseInt(formData.goals_q_stage_of_life || 0, 10),
+      stage_of_life: typeof formData.stage_of_life === 'string' ? parseInt(formData.stage_of_life, 10) : (formData.stage_of_life || 0),
       personal_birth_date: formData.personal_birth_date || null,
       partner_middle_name: formData.partner_middle_name || null,
       partner_phone_1: formData.partner_phone || null,
@@ -1770,7 +1769,16 @@ const handleSubmit = async () => {
   }
 };
 const updatePersonalData = (data) => {
-  form$.value.update({
+  console.log("🔍 updatePersonalData called - stage_of_life from API:", data.stage_of_life);
+  
+  // Process stage_of_life value
+  let stageOfLifeValue = undefined;
+  if (data.stage_of_life !== undefined && data.stage_of_life !== null) {
+    stageOfLifeValue = parseInt(data.stage_of_life, 10);
+    console.log("🎯 Processed stage_of_life value:", stageOfLifeValue);
+  }
+  
+  const updateData = {
     email: data.email,
     personal_first_name: data.first_name,
     personal_last_name: data.last_name,
@@ -1790,8 +1798,14 @@ const updatePersonalData = (data) => {
     
     // Map employment type based on employment field
     personal_employment_type: data.employment === 'Self Employed' ? 1 : 0,
-  });
+    
+    // Handle stage_of_life - ensure it's an integer to match form field values
+    stage_of_life: stageOfLifeValue,
+  };
+  
+  form$.value.update(updateData);
 };
+// console.log('STAGE OF LIFE:', form$.value.data.stage_of_life);
 const updateRelatedData = (data) => {
   console.log("Related Data:", data);
   form$.value.update({
@@ -1813,6 +1827,13 @@ const updateRelatedData = (data) => {
   });
 };
 const updateForm = (data) => {
+  // Handle stage_of_life conversion if it exists in the data
+  if (data.stage_of_life !== undefined) {
+    data.stage_of_life = typeof data.stage_of_life === 'string' ?
+      parseInt(data.stage_of_life, 10) :
+      parseInt(data.stage_of_life || 0, 10);
+  }
+  
   form$.value.update(data);
 };
 
@@ -1859,7 +1880,7 @@ const updateGoalsData = (data) => {
     };
     
     form$.value.update({
-      goals_q_stage_of_life: (goal.stage || 0).toString(),
+      stage_of_life: parseInt(goal.stage || 0, 10),
       goals_list: [{
         goals_q_1_amount_per_week: mapWeeklyAmount(goal.required_amount),
         goals_q_1_amount_per_week_other: goal.required_amount_other || 0,
@@ -2577,12 +2598,81 @@ tokenFromUrl.value = token || url.hash.split('token=')[1];
     // Update all form sections with the API data
     console.log("Full API response data:", remoteData);
     console.log("Property fact finds in response:", remoteData.property_fact_finds);
+    console.log("🎯 CRITICAL: stage_of_life in API response:", remoteData.stage_of_life);
     
     updateForm(remoteData);
     updatePersonalData(remoteData);
     updateGoalsData(remoteData);
     updateFinanceData(remoteData);
     updatePropertyData(remoteData);
+    
+    // Ensure stage_of_life is properly set with multiple approaches
+    if (remoteData.stage_of_life !== undefined) {
+      const stageValue = parseInt(remoteData.stage_of_life, 10);
+      console.log("🎯 Setting stage_of_life to:", stageValue);
+      
+      // Approach 1: Direct form update
+      setTimeout(() => {
+        form$.value.update({ stage_of_life: stageValue });
+        console.log("✅ Direct form update completed");
+      }, 100);
+      
+      // Approach 2: Element-specific update
+      setTimeout(() => {
+        try {
+          const stageElement = form$.value.el$('stage_of_life');
+          if (stageElement) {
+            stageElement.update(stageValue);
+            console.log("✅ Element-specific update completed");
+          }
+        } catch (error) {
+          console.warn("⚠️ Element-specific update failed:", error);
+        }
+      }, 200);
+      
+      // Approach 3: DOM manipulation with Vueform sync
+      setTimeout(() => {
+        const radioButtons = document.querySelectorAll('input[name="stage_of_life"]');
+        console.log("🔧 Found radio buttons:", radioButtons.length);
+        
+        if (radioButtons.length > 0) {
+          radioButtons.forEach((radio, index) => {
+            if (parseInt(radio.value) === stageValue) {
+              radio.checked = true;
+              radio.dispatchEvent(new Event('change', { bubbles: true }));
+              radio.dispatchEvent(new Event('input', { bubbles: true }));
+              console.log(`✅ Set radio button ${index} (value=${radio.value}) to checked`);
+              
+              // Force Vueform to recognize the change
+              setTimeout(() => {
+                form$.value.update({ stage_of_life: stageValue });
+              }, 50);
+            }
+          });
+        }
+      }, 300);
+      
+      // Approach 4: Final verification and force update
+      setTimeout(() => {
+        const finalFormData = form$.value.data;
+        console.log("🔍 Final verification - stage_of_life in form:", finalFormData.stage_of_life);
+        
+        if (finalFormData.stage_of_life !== stageValue) {
+          console.log("🔄 Final force update needed");
+          form$.value.update({ stage_of_life: stageValue });
+          
+          // Also try setting via form element path
+          try {
+            form$.value.data.stage_of_life = stageValue;
+            console.log("✅ Direct data assignment completed");
+          } catch (error) {
+            console.warn("⚠️ Direct data assignment failed:", error);
+          }
+        } else {
+          console.log("✅ stage_of_life is correctly set!");
+        }
+      }, 500);
+    }
     
     // Check if partner data is included in the main response
     if (remoteData.partner || remoteData.related_data) {
