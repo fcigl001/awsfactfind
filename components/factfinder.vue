@@ -135,7 +135,7 @@
           add-text="+ Add partner's view (if different)."
           size="sm"
           :min="1"
-          :max="2"
+          :max="1"
         >
           <template #default="{ index }">
             <ObjectElement :name="index">
@@ -495,6 +495,7 @@
         <ListElement
           name="goals_list"
           add-text="+ Add partners's view if different"
+          :max="1"
         >
           <template #default="{ index }">
             <ObjectElement :name="index">
@@ -533,10 +534,14 @@
               />
               <TextElement
                 name="goals_q_1_amount_per_week_other"
-                input-type="number"
+                input-type="text"
                 autocomplete="off"
                 label="How much?"
                 :rules="['nullable']"
+                default="0"
+                :formatData="formatCurrency"
+                :formatLoad="formatCurrency"
+                @input="(value) => handleCurrencyInput('goals_q_1_amount_per_week_other', value)"
                 :conditions="[
                   ['goals_list.*.goals_q_1_amount_per_week', 'in', [4]],
                 ]"
@@ -623,9 +628,13 @@
               />
               <TextElement
                 name="goals_q_4_contribution"
-                input-type="number"
+                input-type="text"
                 autocomplete="off"
                 label="Amount per week"
+                default="0"
+                :formatData="formatCurrency"
+                :formatLoad="formatCurrency"
+                @input="(value) => handleCurrencyInput('goals_q_4_contribution', value)"
               />
               <StaticElement
                 name="goals_question_5"
@@ -1095,6 +1104,40 @@
                 info="Add Home and Investment Property Assets here."
                 placeholder="Home or Investment property description."
               />
+              <RadiogroupElement
+                name="property_type"
+                view="tabs"
+                :items="[
+                  {
+                    value: 'Home',
+                    label: 'Home',
+                  },
+                  {
+                    value: 'Investment',
+                    label: 'Investment',
+                  },
+                ]"
+                label="Property Type"
+                default="Home"
+              />
+              <TextElement
+                name="weekly_rent"
+                input-type="text"
+                :rules="['nullable']"
+                autocomplete="off"
+                label="Rental Per Week"
+                default="0"
+                :formatData="formatCurrency"
+                :formatLoad="formatCurrency"
+                @input="(value) => handleCurrencyInput('weekly_rent', value)"
+                :conditions="[
+                  [
+                    `finance_assets_list.${index}.property_type`,
+                    'in',
+                    ['Investment'],
+                  ],
+                ]"
+              />
               <GroupElement name="container2">
                 <GroupElement
                   name="column1"
@@ -1109,6 +1152,7 @@
                     autocomplete="off"
                     label="Estimated Value"
                     default="0"
+                    :submit="false"
                     :formatData="formatCurrency"
                     :formatLoad="formatCurrency"
                     @input="(value) => handleCurrencyInput('finance_value', value)"
@@ -1221,7 +1265,6 @@
                     autocomplete="off"
                     label="Type of Asset"
                     placeholder="Select asset type..."
-                    :rules="['required']"
                   />
                   <TextElement
                     name="finance_other_asset_other_description"
@@ -1577,7 +1620,10 @@ const handleSubmit = async () => {
             ...goal,
             // Ensure numeric values are converted to strings where needed
             goals_q_1_amount_per_week: (goal.goals_q_1_amount_per_week || 0).toString(),
+            goals_q_1_amount_per_week_other: processCurrencyField(goal.goals_q_1_amount_per_week_other),
             goals_q_3_time_frame: (goal.goals_q_3_time_frame || 0).toString(),
+            goals_q_4_contribution: processCurrencyField(goal.goals_q_4_contribution),
+            goals_q_5_budget: processCurrencyField(goal.goals_q_5_budget),
             goals_q_6_profile: (goal.goals_q_6_profile || 0).toString()
           })) : []
         },
@@ -1590,7 +1636,10 @@ const handleSubmit = async () => {
             finance_value: processCurrencyField(asset.container2?.column1?.finance_value || asset.finance_value),
             finance_loan_balance: processCurrencyField(asset.container2?.column2?.finance_loan_balance || asset.finance_loan_balance),
             finance_loan_type: asset.container2?.column1?.finance_loan_type || asset.finance_loan_type,
-            finance_rate: asset.container2?.column2?.finance_rate || asset.finance_rate
+            finance_rate: asset.container2?.column2?.finance_rate || asset.finance_rate,
+            // New property type and rental fields
+            property_type: asset.property_type || 'Home',
+            weekly_rent: asset.property_type === 'Investment' ? processCurrencyField(asset.weekly_rent) : 0
           })) : [],
           
           other_assets_list: formData.finance_other_assets_list ? formData.finance_other_assets_list.map(asset => ({
@@ -1883,11 +1932,11 @@ const updateGoalsData = (data) => {
       stage_of_life: parseInt(goal.stage || 0, 10),
       goals_list: [{
         goals_q_1_amount_per_week: mapWeeklyAmount(goal.required_amount),
-        goals_q_1_amount_per_week_other: goal.required_amount_other || 0,
+        goals_q_1_amount_per_week_other: formatCurrency(parseFloat(goal.required_amount_other) || 0),
         goals_q_2_purpose: mapPurpose(goal.purpose),
         goals_q_2a_comment: goal.purpose_comment || '',
         goals_q_3_time_frame: timeframeMap[goal.timeframe] || '2',
-        goals_q_4_contribution: goal.contribution || 0,
+        goals_q_4_contribution: formatCurrency(parseFloat(goal.contribution) || 0),
         goals_q_5_budget: formatCurrency(goal.purchase_budget || 0),
         goals_q_6_profile: riskProfileMap[goal.risk_profile] || '3'
       }]
@@ -1913,12 +1962,19 @@ const updateFinanceData = (data) => {
       financeUpdate.finance_assets_list = data.form_data.finance.assets_list.map(asset => {
         // If the asset already has the correct nested structure, use it
         if (asset.container2) {
-          return asset;
+          return {
+            ...asset,
+            // Ensure property type and rental fields are preserved
+            property_type: asset.property_type || 'Home',
+            weekly_rent: asset.weekly_rent || (asset.property_type === 'Investment' ? formatCurrency(0) : undefined)
+          };
         }
         
         // If it's flat structure, convert to nested
         return {
           finance_address: asset.finance_address,
+          property_type: asset.property_type || 'Home',
+          weekly_rent: asset.weekly_rent || (asset.property_type === 'Investment' ? formatCurrency(0) : undefined),
           container2: {
             column1: {
               finance_value: asset.finance_value,
@@ -2052,6 +2108,8 @@ const updateFinanceData = (data) => {
           // Create the correct nested structure that matches the form template
           const formattedAsset = {
             finance_address: asset.description,
+            property_type: asset.property_type || 'Home', // Default to Home if not specified
+            weekly_rent: asset.property_type === 'Investment' ? formatCurrency(parseFloat(asset.weekly_rent) || 0) : undefined,
             container2: {
               column1: {
                 finance_value: formatCurrency(parsedValue),
@@ -2202,12 +2260,16 @@ const updateFinanceData = (data) => {
               const loanTypeInputs = document.querySelectorAll(`input[name="finance_assets_list.${index}.container2.column1.finance_loan_type"]`);
               const loanBalanceInput = document.getElementById(`finance_assets_list.${index}.container2.column2.finance_loan_balance`);
               const rateInput = document.getElementById(`finance_assets_list.${index}.container2.column2.finance_rate`);
+              const propertyTypeInputs = document.querySelectorAll(`input[name="finance_assets_list.${index}.property_type"]`);
+              const rentalInput = document.getElementById(`finance_assets_list.${index}.weekly_rent`);
               
               console.log(`Property ${index + 1} DOM elements:`, {
                 valueInput: !!valueInput,
                 loanTypeInputs: loanTypeInputs.length,
                 loanBalanceInput: !!loanBalanceInput,
-                rateInput: !!rateInput
+                rateInput: !!rateInput,
+                propertyTypeInputs: propertyTypeInputs.length,
+                rentalInput: !!rentalInput
               });
               
               // Set values directly on DOM elements
@@ -2238,6 +2300,24 @@ const updateFinanceData = (data) => {
                     console.log(`✅ Set loan type for property ${index + 1}: ${asset.container2.column1.finance_loan_type}`);
                   }
                 });
+              }
+              
+              // Handle radio buttons for property type
+              if (propertyTypeInputs.length > 0 && asset.property_type) {
+                propertyTypeInputs.forEach(input => {
+                  if (input.value === asset.property_type) {
+                    input.checked = true;
+                    input.dispatchEvent(new Event('change', { bubbles: true }));
+                    console.log(`✅ Set property type for property ${index + 1}: ${asset.property_type}`);
+                  }
+                });
+              }
+              
+              // Handle rental per week input
+              if (rentalInput && asset.weekly_rent && asset.property_type === 'Investment') {
+                rentalInput.value = asset.weekly_rent;
+                rentalInput.dispatchEvent(new Event('input', { bubbles: true }));
+                console.log(`✅ Set rental per week for property ${index + 1}: ${asset.weekly_rent}`);
               }
               
             } catch (error) {
