@@ -36,6 +36,8 @@
             'personal_address',
             'container3',
             'container2_2',
+            'stage_of_life_question',
+            'stage_of_life',
             'divider_5',
             'h4_2',
             'container2',
@@ -62,8 +64,6 @@
           :elements="[
             'h2',
             'divider_3',
-            'goals_question_1a',
-            'goals_q_stage_of_life',
             'h4_1',
             'goals_list',
           ]"
@@ -135,7 +135,7 @@
           add-text="+ Add partner's view (if different)."
           size="sm"
           :min="1"
-          :max="2"
+          :max="1"
         >
           <template #default="{ index }">
             <ObjectElement :name="index">
@@ -491,47 +491,11 @@
           size="sm"
         />
         <StaticElement name="divider_3" tag="hr" />
-        <StaticElement
-          name="goals_question_1a"
-          tag="h4"
-          content="What is you stage of life?"
-          size="xs"
-        />
-        <RadiogroupElement
-          name="goals_q_stage_of_life"
-          :items="[
-            {
-              value: 0,
-              label: 'A single person or couple without children',
-              description: null,
-            },
-            {
-              value: 1,
-              label: 'A single person or couple with young children',
-              description: null,
-            },
-            {
-              value: 2,
-              label: 'A single person or couple with a mature family',
-              description: null,
-            },
-            {
-              value: 3,
-              label: 'A single person or couple preparing for retirement',
-              description: null,
-            },
-            {
-              value: 4,
-              label: 'A retired person or couple',
-              description: null,
-            },
-          ]"
-          view="blocks"
-        />
         <StaticElement name="h4_1" tag="h4" content="Applicant #1"  size="xs"/>
         <ListElement
           name="goals_list"
           add-text="+ Add partners's view if different"
+          :max="1"
         >
           <template #default="{ index }">
             <ObjectElement :name="index">
@@ -570,10 +534,14 @@
               />
               <TextElement
                 name="goals_q_1_amount_per_week_other"
-                input-type="number"
+                input-type="text"
                 autocomplete="off"
                 label="How much?"
                 :rules="['nullable']"
+                default="0"
+                :formatData="formatCurrency"
+                :formatLoad="formatCurrency"
+                @input="(value) => handleCurrencyInput('goals_q_1_amount_per_week_other', value)"
                 :conditions="[
                   ['goals_list.*.goals_q_1_amount_per_week', 'in', [4]],
                 ]"
@@ -660,9 +628,13 @@
               />
               <TextElement
                 name="goals_q_4_contribution"
-                input-type="number"
+                input-type="text"
                 autocomplete="off"
                 label="Amount per week"
+                default="0"
+                :formatData="formatCurrency"
+                :formatLoad="formatCurrency"
+                @input="(value) => handleCurrencyInput('goals_q_4_contribution', value)"
               />
               <StaticElement
                 name="goals_question_5"
@@ -838,6 +810,43 @@
             }"
           />
         </GroupElement>
+        <StaticElement
+          name="stage_of_life_question"
+          tag="h4"
+          content="What is your stage of life?"
+          size="xs"
+        />
+        <RadiogroupElement
+          name="stage_of_life"
+          :items="[
+            {
+              value: 0,
+              label: 'A single person or couple without children',
+              description: null,
+            },
+            {
+              value: 1,
+              label: 'A single person or couple with young children',
+              description: null,
+            },
+            {
+              value: 2,
+              label: 'A single person or couple with a mature family',
+              description: null,
+            },
+            {
+              value: 3,
+              label: 'A single person or couple preparing for retirement',
+              description: null,
+            },
+            {
+              value: 4,
+              label: 'A retired person or couple',
+              description: null,
+            },
+          ]"
+          view="blocks"
+        />
         <StaticElement name="divider_5" tag="hr" />
         <StaticElement name="h4_2" tag="h4" content="Person #1 Information" />
         <GroupElement name="container2">
@@ -920,15 +929,13 @@
               container: 6,
             }"
           >
-            <DateElement
+            <TextElement
               name="personal_birth_date"
-              label="Birth Date"
-              display-format="DD/MM/YYYY"
-              value-format="DD/MM/YYYY"
-              load-format="DD/MM/YYYY"
-              :input-type="'text'"
-              placeholder="dd/mm/yyyy"
-              :rules="['nullable']"
+              label="Birth Date (Year)"
+              input-type="string"
+              placeholder="yyyy"
+              :rules="['nullable', 'min:0', 'max:4']"
+              autocomplete="off"
             />
           </GroupElement>
           <GroupElement
@@ -1014,11 +1021,11 @@
           view="tabs"
           :items="[
             {
-              value: 'PAYG',
+              value: 0,
               label: 'PAYG',
             },
             {
-              value: 'Self Employed',
+              value: 1,
               label: 'Self Employed',
             },
           ]"
@@ -1032,14 +1039,13 @@
                 container: 6,
               }"
             >
-              <DateElement
+              <TextElement
                 name="partner_birth_date"
-                label="Birth Date"
-                display-format="DD/MM/YYYY"
-                value-format="DD/MM/YYYY"
-                load-format="DD/MM/YYYY"
-                :input-type="'text'"
-                placeholder="dd/mm/yyyy"
+                label="Birth Date (Year)"
+                input-type="number"
+                placeholder="yyyy"
+                :rules="['nullable', 'min:0', 'max:4']"
+                autocomplete="off"
               />
             </GroupElement>
             <GroupElement
@@ -1098,6 +1104,40 @@
                 info="Add Home and Investment Property Assets here."
                 placeholder="Home or Investment property description."
               />
+              <RadiogroupElement
+                name="property_type"
+                view="tabs"
+                :items="[
+                  {
+                    value: 'Home',
+                    label: 'Home',
+                  },
+                  {
+                    value: 'Investment',
+                    label: 'Investment',
+                  },
+                ]"
+                label="Property Type"
+                default="Home"
+              />
+              <TextElement
+                name="weekly_rent"
+                input-type="text"
+                :rules="['nullable']"
+                autocomplete="off"
+                label="Rental Per Week"
+                default="0"
+                :formatData="formatCurrency"
+                :formatLoad="formatCurrency"
+                @input="(value) => handleCurrencyInput('weekly_rent', value)"
+                :conditions="[
+                  [
+                    `finance_assets_list.${index}.property_type`,
+                    'in',
+                    ['Investment'],
+                  ],
+                ]"
+              />
               <GroupElement name="container2">
                 <GroupElement
                   name="column1"
@@ -1112,6 +1152,7 @@
                     autocomplete="off"
                     label="Estimated Value"
                     default="0"
+                    :submit="false"
                     :formatData="formatCurrency"
                     :formatLoad="formatCurrency"
                     @input="(value) => handleCurrencyInput('finance_value', value)"
@@ -1224,7 +1265,6 @@
                     autocomplete="off"
                     label="Type of Asset"
                     placeholder="Select asset type..."
-                    :rules="['required']"
                   />
                   <TextElement
                     name="finance_other_asset_other_description"
@@ -1416,7 +1456,7 @@ import { useRoute } from 'vue-router';
 const form$ = ref(null);
 const prodUrl = "https://piers.forrestercohen.com";
 const devUrl = "https://piers.test";
-const url = process.env.NODE_ENV === "production" ? prodUrl : devUrl;
+const urlAPI = process.env.NODE_ENV === "production" ? prodUrl : devUrl;
 const amount = ref(null);
 const income = ref(null);
 const userIdFromToken = ref(null);
@@ -1556,6 +1596,7 @@ const handleSubmit = async () => {
           income: processCurrencyField(formData.personal_income),
           employment_type: formData.personal_employment_type || null,
           birth_date: formData.personal_birth_date || null,
+          stage_of_life:  2, // parseInt(formData.stage_of_life, 10) || 2,
           health: formData.personal_health || null
         },
         
@@ -1565,6 +1606,7 @@ const handleSubmit = async () => {
           last_name: formData.partner_last_name || null,
           middle_name: formData.partner_middle_name || null,
           phone: formData.partner_phone || null,
+          phone_1: formData.partner_phone || null, // Ensure partner_phone_1 mapping
           email: formData.partner_email || null,
           income: processCurrencyField(formData.partner_income),
           employment_type: formData.partner_employment_type || null,
@@ -1574,12 +1616,14 @@ const handleSubmit = async () => {
         
         // Goals Section
         goals: {
-          stage_of_life: (formData.goals_q_stage_of_life || 0).toString(),
           goals_list: formData.goals_list ? formData.goals_list.map(goal => ({
             ...goal,
             // Ensure numeric values are converted to strings where needed
             goals_q_1_amount_per_week: (goal.goals_q_1_amount_per_week || 0).toString(),
+            goals_q_1_amount_per_week_other: processCurrencyField(goal.goals_q_1_amount_per_week_other),
             goals_q_3_time_frame: (goal.goals_q_3_time_frame || 0).toString(),
+            goals_q_4_contribution: processCurrencyField(goal.goals_q_4_contribution),
+            goals_q_5_budget: processCurrencyField(goal.goals_q_5_budget),
             goals_q_6_profile: (goal.goals_q_6_profile || 0).toString()
           })) : []
         },
@@ -1592,7 +1636,10 @@ const handleSubmit = async () => {
             finance_value: processCurrencyField(asset.container2?.column1?.finance_value || asset.finance_value),
             finance_loan_balance: processCurrencyField(asset.container2?.column2?.finance_loan_balance || asset.finance_loan_balance),
             finance_loan_type: asset.container2?.column1?.finance_loan_type || asset.finance_loan_type,
-            finance_rate: asset.container2?.column2?.finance_rate || asset.finance_rate
+            finance_rate: asset.container2?.column2?.finance_rate || asset.finance_rate,
+            // New property type and rental fields
+            property_type: asset.property_type || 'Home',
+            weekly_rent: asset.property_type === 'Investment' ? processCurrencyField(asset.weekly_rent) : 0
           })) : [],
           
           other_assets_list: formData.finance_other_assets_list ? formData.finance_other_assets_list.map(asset => ({
@@ -1628,10 +1675,16 @@ const handleSubmit = async () => {
       },
       
       // Legacy format for backward compatibility
-      stage_of_life: (formData.goals_q_stage_of_life || 0).toString(),
+      stage_of_life: typeof formData.stage_of_life === 'string' ? parseInt(formData.stage_of_life, 10) : (formData.stage_of_life || 0),
       property_answers: processPropertyAnswers(formData.property_list),
       personal_income: processCurrencyField(formData.personal_income),
       partner_income: processCurrencyField(formData.partner_income),
+      
+      // Ensure specific required fields are included
+      stage_of_life: typeof formData.stage_of_life === 'string' ? parseInt(formData.stage_of_life, 10) : (formData.stage_of_life || 0),
+      personal_birth_date: formData.personal_birth_date || null,
+      partner_middle_name: formData.partner_middle_name || null,
+      partner_phone_1: formData.partner_phone || null,
       
       // Raw form data for complete backup
       raw_form_data: formData
@@ -1685,7 +1738,7 @@ const handleSubmit = async () => {
     
     // Monitor request details
     console.log("🌐 API Request Details:", {
-      url: url + "/api/generate-pdf",
+      url: urlAPI + "/api/generate-pdf",
       method: "POST",
       headers: {
         'Authorization': 'Bearer ' + tokenFromUrl.value?.substring(0, 20) + '...',
@@ -1697,7 +1750,7 @@ const handleSubmit = async () => {
     console.log("📤 Sending request to API...");
     
     const response = await axios.post(
-      url+"/api/generate-pdf",
+      urlAPI+"/api/generate-pdf",
       submitData,
       {
         headers: {
@@ -1713,7 +1766,7 @@ const handleSubmit = async () => {
     console.log("📊 Response Headers:", response.headers);
     console.log("🚀 === API SUBMISSION MONITOR END ===");
     message = response.data.message;
-    responseURL.value = response.data.url;
+    responseURL.value = response.data.url; // DONT KNOW IF THIS IS CORRECT
     ok.value = true;
   } catch (error) {
     console.log("❌ === API ERROR MONITOR START ===");
@@ -1765,7 +1818,16 @@ const handleSubmit = async () => {
   }
 };
 const updatePersonalData = (data) => {
-  form$.value.update({
+  console.log("🔍 updatePersonalData called - stage_of_life from API:", data.stage_of_life);
+  
+  // Process stage_of_life value
+  let stageOfLifeValue = undefined;
+  if (data.stage_of_life !== undefined && data.stage_of_life !== null) {
+    stageOfLifeValue = parseInt(data.stage_of_life, 10);
+    console.log("🎯 Processed stage_of_life value:", stageOfLifeValue);
+  }
+  
+  const updateData = {
     email: data.email,
     personal_first_name: data.first_name,
     personal_last_name: data.last_name,
@@ -1781,12 +1843,18 @@ const updatePersonalData = (data) => {
     personal_health: data.health,
     personal_payg: data.payg,
     personal_self_employed: data.self_employed,
-    personal_birth_date: data.birth_date,
+    personal_birth_date: data.birth_date ? new Date(data.birth_date).getFullYear().toString() : null,
     
     // Map employment type based on employment field
     personal_employment_type: data.employment === 'Self Employed' ? 1 : 0,
-  });
+    
+    // Handle stage_of_life - ensure it's an integer to match form field values
+    stage_of_life: stageOfLifeValue,
+  };
+  
+  form$.value.update(updateData);
 };
+// console.log('STAGE OF LIFE:', form$.value.data.stage_of_life);
 const updateRelatedData = (data) => {
   console.log("Related Data:", data);
   form$.value.update({
@@ -1804,10 +1872,17 @@ const updateRelatedData = (data) => {
     partner_health: data.health,
     partner_payg: data.payg,
     partner_self_employed: data.self_employed,
-    partner_birth_date: data.birth_date,
+    partner_birth_date: data.birth_date ? new Date(data.birth_date).getFullYear().toString() : null,
   });
 };
 const updateForm = (data) => {
+  // Handle stage_of_life conversion if it exists in the data
+  if (data.stage_of_life !== undefined) {
+    data.stage_of_life = typeof data.stage_of_life === 'string' ?
+      parseInt(data.stage_of_life, 10) :
+      parseInt(data.stage_of_life || 0, 10);
+  }
+  
   form$.value.update(data);
 };
 
@@ -1854,14 +1929,14 @@ const updateGoalsData = (data) => {
     };
     
     form$.value.update({
-      goals_q_stage_of_life: (goal.stage || 0).toString(),
+      stage_of_life: parseInt(goal.stage || 0, 10),
       goals_list: [{
         goals_q_1_amount_per_week: mapWeeklyAmount(goal.required_amount),
-        goals_q_1_amount_per_week_other: goal.required_amount_other || 0,
+        goals_q_1_amount_per_week_other: formatCurrency(parseFloat(goal.required_amount_other) || 0),
         goals_q_2_purpose: mapPurpose(goal.purpose),
         goals_q_2a_comment: goal.purpose_comment || '',
         goals_q_3_time_frame: timeframeMap[goal.timeframe] || '2',
-        goals_q_4_contribution: goal.contribution || 0,
+        goals_q_4_contribution: formatCurrency(parseFloat(goal.contribution) || 0),
         goals_q_5_budget: formatCurrency(goal.purchase_budget || 0),
         goals_q_6_profile: riskProfileMap[goal.risk_profile] || '3'
       }]
@@ -1887,12 +1962,19 @@ const updateFinanceData = (data) => {
       financeUpdate.finance_assets_list = data.form_data.finance.assets_list.map(asset => {
         // If the asset already has the correct nested structure, use it
         if (asset.container2) {
-          return asset;
+          return {
+            ...asset,
+            // Ensure property type and rental fields are preserved
+            property_type: asset.property_type || 'Home',
+            weekly_rent: asset.weekly_rent || (asset.property_type === 'Investment' ? formatCurrency(0) : undefined)
+          };
         }
         
         // If it's flat structure, convert to nested
         return {
           finance_address: asset.finance_address,
+          property_type: asset.property_type || 'Home',
+          weekly_rent: asset.weekly_rent || (asset.property_type === 'Investment' ? formatCurrency(0) : undefined),
           container2: {
             column1: {
               finance_value: asset.finance_value,
@@ -2026,6 +2108,8 @@ const updateFinanceData = (data) => {
           // Create the correct nested structure that matches the form template
           const formattedAsset = {
             finance_address: asset.description,
+            property_type: asset.property_type || 'Home', // Default to Home if not specified
+            weekly_rent: asset.property_type === 'Investment' ? formatCurrency(parseFloat(asset.weekly_rent) || 0) : undefined,
             container2: {
               column1: {
                 finance_value: formatCurrency(parsedValue),
@@ -2176,12 +2260,16 @@ const updateFinanceData = (data) => {
               const loanTypeInputs = document.querySelectorAll(`input[name="finance_assets_list.${index}.container2.column1.finance_loan_type"]`);
               const loanBalanceInput = document.getElementById(`finance_assets_list.${index}.container2.column2.finance_loan_balance`);
               const rateInput = document.getElementById(`finance_assets_list.${index}.container2.column2.finance_rate`);
+              const propertyTypeInputs = document.querySelectorAll(`input[name="finance_assets_list.${index}.property_type"]`);
+              const rentalInput = document.getElementById(`finance_assets_list.${index}.weekly_rent`);
               
               console.log(`Property ${index + 1} DOM elements:`, {
                 valueInput: !!valueInput,
                 loanTypeInputs: loanTypeInputs.length,
                 loanBalanceInput: !!loanBalanceInput,
-                rateInput: !!rateInput
+                rateInput: !!rateInput,
+                propertyTypeInputs: propertyTypeInputs.length,
+                rentalInput: !!rentalInput
               });
               
               // Set values directly on DOM elements
@@ -2212,6 +2300,24 @@ const updateFinanceData = (data) => {
                     console.log(`✅ Set loan type for property ${index + 1}: ${asset.container2.column1.finance_loan_type}`);
                   }
                 });
+              }
+              
+              // Handle radio buttons for property type
+              if (propertyTypeInputs.length > 0 && asset.property_type) {
+                propertyTypeInputs.forEach(input => {
+                  if (input.value === asset.property_type) {
+                    input.checked = true;
+                    input.dispatchEvent(new Event('change', { bubbles: true }));
+                    console.log(`✅ Set property type for property ${index + 1}: ${asset.property_type}`);
+                  }
+                });
+              }
+              
+              // Handle rental per week input
+              if (rentalInput && asset.weekly_rent && asset.property_type === 'Investment') {
+                rentalInput.value = asset.weekly_rent;
+                rentalInput.dispatchEvent(new Event('input', { bubbles: true }));
+                console.log(`✅ Set rental per week for property ${index + 1}: ${asset.weekly_rent}`);
               }
               
             } catch (error) {
@@ -2551,15 +2657,15 @@ tokenFromUrl.value = token || url.hash.split('token=')[1];
   var pathName = window.location.pathname;
   var segments = pathName.split("/");
   var lastSegment = segments.pop() || segments.pop(); // handle potential trailing slash
-  console.log(url);
-  const baseUrl = `${url}/api/clients/${clientId}?token=${tokenFromUrl.value}`;
+  console.log(urlAPI);
+  const baseUrl = `${urlAPI}/api/clients/${clientId}?token=${tokenFromUrl.value}`;
   
   //const baseUrl = "http://localhost:3000/clients.json";
   console.log("BASE URL", tokenFromUrl.value, clientId, baseUrl)
   formId = clientId; // Use client_id from JWT token
   try {
     console.log("Making API request to:", baseUrl);
-   const response = await axios.get(`https://piers.forrestercohen.com/api/clients/${clientId}`, {
+   const response = await axios.get(`${urlAPI}/api/clients/${clientId}`, {
       headers: {
         'Authorization': 'Bearer ' + tokenFromUrl.value,
         'Accept': 'application/json'
@@ -2572,12 +2678,81 @@ tokenFromUrl.value = token || url.hash.split('token=')[1];
     // Update all form sections with the API data
     console.log("Full API response data:", remoteData);
     console.log("Property fact finds in response:", remoteData.property_fact_finds);
+    console.log("🎯 CRITICAL: stage_of_life in API response:", remoteData.stage_of_life);
     
     updateForm(remoteData);
     updatePersonalData(remoteData);
     updateGoalsData(remoteData);
     updateFinanceData(remoteData);
     updatePropertyData(remoteData);
+    
+    // Ensure stage_of_life is properly set with multiple approaches
+    if (remoteData.stage_of_life !== undefined) {
+      const stageValue = parseInt(remoteData.stage_of_life, 10);
+      console.log("🎯 Setting stage_of_life to:", stageValue);
+      
+      // Approach 1: Direct form update
+      setTimeout(() => {
+        form$.value.update({ stage_of_life: stageValue });
+        console.log("✅ Direct form update completed");
+      }, 100);
+      
+      // Approach 2: Element-specific update
+      setTimeout(() => {
+        try {
+          const stageElement = form$.value.el$('stage_of_life');
+          if (stageElement) {
+            stageElement.update(stageValue);
+            console.log("✅ Element-specific update completed");
+          }
+        } catch (error) {
+          console.warn("⚠️ Element-specific update failed:", error);
+        }
+      }, 200);
+      
+      // Approach 3: DOM manipulation with Vueform sync
+      setTimeout(() => {
+        const radioButtons = document.querySelectorAll('input[name="stage_of_life"]');
+        console.log("🔧 Found radio buttons:", radioButtons.length);
+        
+        if (radioButtons.length > 0) {
+          radioButtons.forEach((radio, index) => {
+            if (parseInt(radio.value) === stageValue) {
+              radio.checked = true;
+              radio.dispatchEvent(new Event('change', { bubbles: true }));
+              radio.dispatchEvent(new Event('input', { bubbles: true }));
+              console.log(`✅ Set radio button ${index} (value=${radio.value}) to checked`);
+              
+              // Force Vueform to recognize the change
+              setTimeout(() => {
+                form$.value.update({ stage_of_life: stageValue });
+              }, 50);
+            }
+          });
+        }
+      }, 300);
+      
+      // Approach 4: Final verification and force update
+      setTimeout(() => {
+        const finalFormData = form$.value.data;
+        console.log("🔍 Final verification - stage_of_life in form:", finalFormData.stage_of_life);
+        
+        if (finalFormData.stage_of_life !== stageValue) {
+          console.log("🔄 Final force update needed");
+          form$.value.update({ stage_of_life: stageValue });
+          
+          // Also try setting via form element path
+          try {
+            form$.value.data.stage_of_life = stageValue;
+            console.log("✅ Direct data assignment completed");
+          } catch (error) {
+            console.warn("⚠️ Direct data assignment failed:", error);
+          }
+        } else {
+          console.log("✅ stage_of_life is correctly set!");
+        }
+      }, 500);
+    }
     
     // Check if partner data is included in the main response
     if (remoteData.partner || remoteData.related_data) {
