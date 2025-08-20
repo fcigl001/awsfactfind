@@ -132,12 +132,18 @@
         <StaticElement name="divider" tag="hr" />
         <ListElement
           name="property_list"
-          add-text="+ Add partner's view (if different)."
+          :add-text="hasPartnerData ? '+ Add partner\'s view (if different).' : ''"
           size="sm"
           :min="1"
-          :max="1"
+          :max="hasPartnerData ? 2 : 1"
+          :initial="1"
         >
+
           <template #default="{ index }">
+            <div v-if="index > 0">
+              <hr class="green-divider" />
+              <h4 style="font-size: 1rem; font-weight: 600; margin: 1rem 0 0.5rem 0;">Partner</h4>
+            </div>
             <ObjectElement :name="index">
               <StaticElement
                 name="question_1"
@@ -240,7 +246,7 @@
                 size="sm"
               />
               <RadiogroupElement
-                name="property_q-4_type_preferences"
+                name="property_q_4_type_preferences"
                 view="tabs"
                 :items="[
                   {
@@ -287,7 +293,7 @@
                 view="blocks"
                 :conditions="[
                   [
-                    'property_list.*.property_q-4_type_preferences',
+                    'property_list.*.property_q_4_type_preferences',
                     'in',
                     ['Yes'],
                   ],
@@ -299,7 +305,7 @@
                 size="sm"
                 :conditions="[
                   [
-                    'property_list.*.property_q-4_type_preferences',
+                    'property_list.*.property_q_4_type_preferences',
                     'in',
                     ['Yes'],
                   ],
@@ -492,12 +498,22 @@
         />
         <StaticElement name="divider_3" tag="hr" />
         <StaticElement name="h4_1" tag="h4" content="Applicant #1"  size="xs"/>
-        <ListElement
+        
+
+          <ListElement
           name="goals_list"
-          add-text="+ Add partners's view if different"
-          :max="1"
+          :add-text="hasPartnerData ? '+ Add partner\'s view if different' : ''"
+          :max="hasPartnerData ? 2 : 1"
+          :min="1"
+          :initial="1"
         >
+
+            
           <template #default="{ index }">
+            <div v-if="index > 0">
+              <hr class="green-divider" />
+              <h4 style="font-size: 1rem; font-weight: 600; margin: 1rem 0 0.5rem 0;">Partner</h4>
+            </div>
             <ObjectElement :name="index">
               <StaticElement
                 name="goals_question_1"
@@ -675,19 +691,19 @@
                       'You have a general understanding of investment property markets, but would like to have a broader understanding in order to explore the possibilities. You are prepared to accept moderate level of risk to achieve possible gains.',
                   },
                   {
-                    value: 3,
+                    value: 2,
                     label: 'Balanced',
                     description:
                       'You have a reasonable understanding of the property investment market. When you think in terms of risk you think in terms of possibilities. You are a moderate risk taker and can accept some moderate levels of investment risk.',
                   },
                   {
-                    value: 4,
+                    value: 3,
                     label: 'Assertive',
                     description:
                       'You are a growth investor and are seeking capital growth. You are prepared to accept higher volatility and moderate risk to achieve your goals.',
                   },
                   {
-                    value: 5,
+                    value: 4,
                     label: 'Aggressive',
                     description:
                       'You are a high growth investor prepared to compromise portfolio balance to pursure potentially greater longer term returns. Security of capital is secondary to the potential for wealth creation.',
@@ -697,6 +713,7 @@
             </ObjectElement>
           </template>
         </ListElement>
+     
         <StaticElement
           name="h2_1"
           tag="h3"
@@ -974,7 +991,14 @@
           </GroupElement>
         </GroupElement>
         <StaticElement name="divider_9" tag="hr" />
-        <StaticElement
+     
+
+          <StaticElement
+            name="h4_5a"
+            tag="p"
+            content="If you are applying jointly, please fill out the partner's information below."
+          />
+        <StaticElement 
           name="h4_5"
           tag="h4"
           content="Partner Information (if joint application)"
@@ -1083,6 +1107,7 @@
             </GroupElement>
           </GroupElement>
         </GroupElement>
+   
         <StaticElement name="h3_1" tag="h3" content="Finance" align="center" />
         <StaticElement name="divider_6" tag="hr" />
         <StaticElement
@@ -1308,7 +1333,7 @@
           </template>
         </ListElement>
         <StaticElement name="divider_8" tag="hr" />
-        <StaticElement name="h4_4" tag="h4" content="Liabilities" />
+        <StaticElement name="h4_4" tag="h4" content="Non Property Liabilities" />
         <ListElement
           name="finance_liabilities_list"
           add-text="+Add other liabilities"
@@ -1516,6 +1541,34 @@ const formatCurrency = (value) => {
   }).format(numValue);
 };
 
+const hasPartnerData = computed(() => {
+  const d = form$?.value?.data;
+  if (!d) return false;
+
+  // Treat any non-empty, non-zero related_id as "exists"
+  const hasRelatedId =
+    d.related_id !== null &&
+    d.related_id !== undefined &&
+    String(d.related_id).trim() !== '' &&
+    Number(d.related_id) !== 0;
+
+  if (hasRelatedId) return true;
+
+  // Otherwise, use the original partner field checks
+  const income = d.partner_income;
+  const hasIncome =
+    income &&
+    !['0', '0.00', '$0', '$0.00'].includes(String(income).replace(/[, ]/g, ''));
+
+  return !!(
+    d.partner_first_name ||
+    d.partner_last_name ||
+    d.partner_email ||
+    d.partner_phone ||
+    hasIncome
+  );
+});
+
 // Parse currency string back to number
 const parseCurrency = (value) => {
   if (!value) return 0;
@@ -1551,7 +1604,7 @@ const handleSubmit = async () => {
         property_q_1_familar: property.property_q_1_familar ? property.property_q_1_familar.toString() : null,
         property_q_2_growth: property.property_q_2_growth ? property.property_q_2_growth.toString() : null,
         property_q_3_wait: property.property_q_3_wait ? property.property_q_3_wait.toString() : null,
-        property_q_4_type_preferences: property['property_q-4_type_preferences'] || null,
+        property_q_4_type_preferences: property.property_q_4_type_preferences || null,
         property_q_4_types_of_investment: property.property_q_4_types_of_investment || null,
         property_q_4_investment_preference_comment: property.property_q_4_investment_preference_comment || null,
         property_q_5_location_preference: property.property_q_5_location_preference || null,
@@ -1596,7 +1649,7 @@ const handleSubmit = async () => {
           income: processCurrencyField(formData.personal_income),
           employment_type: formData.personal_employment_type || null,
           birth_date: formData.personal_birth_date || null,
-          stage_of_life:  2, // parseInt(formData.stage_of_life, 10) || 2,
+          stage_of_life:  parseInt(formData.stage_of_life, 10) || 1,
           health: formData.personal_health || null
         },
         
@@ -2590,7 +2643,7 @@ const updatePropertyData = (data) => {
       property_q_1_familar: propertyFactFind.familiarity_with_markets?.toString() || null,
       property_q_2_growth: propertyFactFind.expected_capital_growth?.toString() || null,
       property_q_3_wait: propertyFactFind.wait_time_before_selling?.toString() || null,
-      'property_q-4_type_preferences': mapTypePreferences(propertyFactFind.has_type_preferences),
+      property_q_4_type_preferences: mapTypePreferences(propertyFactFind.has_type_preferences),
       property_q_4_types_of_investment: propertyFactFind.types_of_investment || null,
       property_q_4_investment_preference_comment: propertyFactFind.investment_preference_comment || null,
       property_q_5_location_preference: mapLocationPreference(propertyFactFind.has_location_preference),
@@ -2676,7 +2729,7 @@ tokenFromUrl.value = token || url.hash.split('token=')[1];
     const relatedId = remoteData.related_id;
     
     // Update all form sections with the API data
-    console.log("Full API response data:", remoteData);
+    console.log("Full API response data:", remoteData, relatedId);
     console.log("Property fact finds in response:", remoteData.property_fact_finds);
     console.log("🎯 CRITICAL: stage_of_life in API response:", remoteData.stage_of_life);
     
