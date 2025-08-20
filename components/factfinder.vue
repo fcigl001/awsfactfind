@@ -135,9 +135,14 @@
           add-text="+ Add partner's view (if different)."
           size="sm"
           :min="1"
-          :max="1"
+          :max="2"
+          :initial="1"
         >
           <template #default="{ index }">
+            <div v-if="index > 0">
+              <hr class="green-divider" />
+              <h4 style="font-size: 1rem; font-weight: 600; margin: 1rem 0 0.5rem 0;">Partner</h4>
+            </div>
             <ObjectElement :name="index">
               <StaticElement
                 name="question_1"
@@ -240,7 +245,7 @@
                 size="sm"
               />
               <RadiogroupElement
-                name="property_q-4_type_preferences"
+                name="property_q_4_type_preferences"
                 view="tabs"
                 :items="[
                   {
@@ -287,7 +292,7 @@
                 view="blocks"
                 :conditions="[
                   [
-                    'property_list.*.property_q-4_type_preferences',
+                    'property_list.*.property_q_4_type_preferences',
                     'in',
                     ['Yes'],
                   ],
@@ -299,7 +304,7 @@
                 size="sm"
                 :conditions="[
                   [
-                    'property_list.*.property_q-4_type_preferences',
+                    'property_list.*.property_q_4_type_preferences',
                     'in',
                     ['Yes'],
                   ],
@@ -494,10 +499,16 @@
         <StaticElement name="h4_1" tag="h4" content="Applicant #1"  size="xs"/>
         <ListElement
           name="goals_list"
-          add-text="+ Add partners's view if different"
-          :max="1"
+          add-text="+ Add partner's view if different"
+          :max="2"
+          :min="1"
+          :initial="1"
         >
           <template #default="{ index }">
+            <div v-if="index > 0">
+              <hr class="green-divider" />
+              <h4 style="font-size: 1rem; font-weight: 600; margin: 1rem 0 0.5rem 0;">Partner</h4>
+            </div>
             <ObjectElement :name="index">
               <StaticElement
                 name="goals_question_1"
@@ -675,19 +686,19 @@
                       'You have a general understanding of investment property markets, but would like to have a broader understanding in order to explore the possibilities. You are prepared to accept moderate level of risk to achieve possible gains.',
                   },
                   {
-                    value: 3,
+                    value: 2,
                     label: 'Balanced',
                     description:
                       'You have a reasonable understanding of the property investment market. When you think in terms of risk you think in terms of possibilities. You are a moderate risk taker and can accept some moderate levels of investment risk.',
                   },
                   {
-                    value: 4,
+                    value: 3,
                     label: 'Assertive',
                     description:
                       'You are a growth investor and are seeking capital growth. You are prepared to accept higher volatility and moderate risk to achieve your goals.',
                   },
                   {
-                    value: 5,
+                    value: 4,
                     label: 'Aggressive',
                     description:
                       'You are a high growth investor prepared to compromise portfolio balance to pursure potentially greater longer term returns. Security of capital is secondary to the potential for wealth creation.',
@@ -1308,7 +1319,7 @@
           </template>
         </ListElement>
         <StaticElement name="divider_8" tag="hr" />
-        <StaticElement name="h4_4" tag="h4" content="Liabilities" />
+        <StaticElement name="h4_4" tag="h4" content="Non Property Liabilities" />
         <ListElement
           name="finance_liabilities_list"
           add-text="+Add other liabilities"
@@ -1551,7 +1562,7 @@ const handleSubmit = async () => {
         property_q_1_familar: property.property_q_1_familar ? property.property_q_1_familar.toString() : null,
         property_q_2_growth: property.property_q_2_growth ? property.property_q_2_growth.toString() : null,
         property_q_3_wait: property.property_q_3_wait ? property.property_q_3_wait.toString() : null,
-        property_q_4_type_preferences: property['property_q-4_type_preferences'] || null,
+        property_q_4_type_preferences: property.property_q_4_type_preferences || null,
         property_q_4_types_of_investment: property.property_q_4_types_of_investment || null,
         property_q_4_investment_preference_comment: property.property_q_4_investment_preference_comment || null,
         property_q_5_location_preference: property.property_q_5_location_preference || null,
@@ -2590,7 +2601,7 @@ const updatePropertyData = (data) => {
       property_q_1_familar: propertyFactFind.familiarity_with_markets?.toString() || null,
       property_q_2_growth: propertyFactFind.expected_capital_growth?.toString() || null,
       property_q_3_wait: propertyFactFind.wait_time_before_selling?.toString() || null,
-      'property_q-4_type_preferences': mapTypePreferences(propertyFactFind.has_type_preferences),
+      property_q_4_type_preferences: mapTypePreferences(propertyFactFind.has_type_preferences),
       property_q_4_types_of_investment: propertyFactFind.types_of_investment || null,
       property_q_4_investment_preference_comment: propertyFactFind.investment_preference_comment || null,
       property_q_5_location_preference: mapLocationPreference(propertyFactFind.has_location_preference),
