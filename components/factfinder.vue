@@ -132,12 +132,13 @@
         <StaticElement name="divider" tag="hr" />
         <ListElement
           name="property_list"
-          add-text="+ Add partner's view (if different)."
+          :add-text="hasPartnerData ? '+ Add partner\'s view (if different).' : ''"
           size="sm"
           :min="1"
-          :max="2"
+          :max="hasPartnerData ? 2 : 1"
           :initial="1"
         >
+
           <template #default="{ index }">
             <div v-if="index > 0">
               <hr class="green-divider" />
@@ -497,13 +498,17 @@
         />
         <StaticElement name="divider_3" tag="hr" />
         <StaticElement name="h4_1" tag="h4" content="Applicant #1"  size="xs"/>
-        <ListElement
+        
+
+          <ListElement
           name="goals_list"
-          add-text="+ Add partner's view if different"
-          :max="2"
+          :add-text="hasPartnerData ? '+ Add partner\'s view if different' : ''"
+          :max="hasPartnerData ? 2 : 1"
           :min="1"
           :initial="1"
         >
+
+            
           <template #default="{ index }">
             <div v-if="index > 0">
               <hr class="green-divider" />
@@ -708,6 +713,7 @@
             </ObjectElement>
           </template>
         </ListElement>
+     
         <StaticElement
           name="h2_1"
           tag="h3"
@@ -985,7 +991,14 @@
           </GroupElement>
         </GroupElement>
         <StaticElement name="divider_9" tag="hr" />
-        <StaticElement
+     
+
+          <StaticElement
+            name="h4_5a"
+            tag="p"
+            content="If you are applying jointly, please fill out the partner's information below."
+          />
+        <StaticElement 
           name="h4_5"
           tag="h4"
           content="Partner Information (if joint application)"
@@ -1094,6 +1107,7 @@
             </GroupElement>
           </GroupElement>
         </GroupElement>
+   
         <StaticElement name="h3_1" tag="h3" content="Finance" align="center" />
         <StaticElement name="divider_6" tag="hr" />
         <StaticElement
@@ -1527,6 +1541,34 @@ const formatCurrency = (value) => {
   }).format(numValue);
 };
 
+const hasPartnerData = computed(() => {
+  const d = form$?.value?.data;
+  if (!d) return false;
+
+  // Treat any non-empty, non-zero related_id as "exists"
+  const hasRelatedId =
+    d.related_id !== null &&
+    d.related_id !== undefined &&
+    String(d.related_id).trim() !== '' &&
+    Number(d.related_id) !== 0;
+
+  if (hasRelatedId) return true;
+
+  // Otherwise, use the original partner field checks
+  const income = d.partner_income;
+  const hasIncome =
+    income &&
+    !['0', '0.00', '$0', '$0.00'].includes(String(income).replace(/[, ]/g, ''));
+
+  return !!(
+    d.partner_first_name ||
+    d.partner_last_name ||
+    d.partner_email ||
+    d.partner_phone ||
+    hasIncome
+  );
+});
+
 // Parse currency string back to number
 const parseCurrency = (value) => {
   if (!value) return 0;
@@ -1607,7 +1649,7 @@ const handleSubmit = async () => {
           income: processCurrencyField(formData.personal_income),
           employment_type: formData.personal_employment_type || null,
           birth_date: formData.personal_birth_date || null,
-          stage_of_life:  2, // parseInt(formData.stage_of_life, 10) || 2,
+          stage_of_life:  parseInt(formData.stage_of_life, 10) || 1,
           health: formData.personal_health || null
         },
         
@@ -2687,7 +2729,7 @@ tokenFromUrl.value = token || url.hash.split('token=')[1];
     const relatedId = remoteData.related_id;
     
     // Update all form sections with the API data
-    console.log("Full API response data:", remoteData);
+    console.log("Full API response data:", remoteData, relatedId);
     console.log("Property fact finds in response:", remoteData.property_fact_finds);
     console.log("🎯 CRITICAL: stage_of_life in API response:", remoteData.stage_of_life);
     
