@@ -1595,23 +1595,23 @@ const handleSubmit = async () => {
     // Get all form data
     const formData = form$.value.data;
     
-    // Process property answers - ensure they're properly structured for FactFindController.php
+    // Process property answers - ensure they're properly structured for FactFindController.php with consistent integer types
     const processPropertyAnswers = (propertyList) => {
       if (!propertyList || !Array.isArray(propertyList)) return [];
       
       return propertyList.map((property, index) => ({
         applicant_number: index + 1,
-        property_q_1_familar: property.property_q_1_familar !== null && property.property_q_1_familar !== undefined ? property.property_q_1_familar.toString() : null,
-        property_q_2_growth: property.property_q_2_growth !== null && property.property_q_2_growth !== undefined ? property.property_q_2_growth.toString() : null,
-        property_q_3_wait: property.property_q_3_wait !== null && property.property_q_3_wait !== undefined ? property.property_q_3_wait.toString() : null,
+        property_q_1_familar: property.property_q_1_familar !== null && property.property_q_1_familar !== undefined ? parseInt(property.property_q_1_familar, 10) : null,
+        property_q_2_growth: property.property_q_2_growth !== null && property.property_q_2_growth !== undefined ? parseInt(property.property_q_2_growth, 10) : null,
+        property_q_3_wait: property.property_q_3_wait !== null && property.property_q_3_wait !== undefined ? parseInt(property.property_q_3_wait, 10) : null,
         property_q_4_type_preferences: property.property_q_4_type_preferences || null,
         property_q_4_types_of_investment: property.property_q_4_types_of_investment || null,
         property_q_4_investment_preference_comment: property.property_q_4_investment_preference_comment || null,
         property_q_5_location_preference: property.property_q_5_location_preference || null,
         property_q_5_preference_location_states: property.property_q_5_preference_location_states || null,
         property_q_5_preference_location_states_other: property.property_q_5_preference_location_states_other || null,
-        property_q_6_taxation: property.property_q_6_taxation !== null && property.property_q_6_taxation !== undefined ? property.property_q_6_taxation.toString() : null,
-        property_q_7_gearing: property.property_q_7_gearing !== null && property.property_q_7_gearing !== undefined ? property.property_q_7_gearing.toString() : null
+        property_q_6_taxation: property.property_q_6_taxation !== null && property.property_q_6_taxation !== undefined ? parseInt(property.property_q_6_taxation, 10) : null,
+        property_q_7_gearing: property.property_q_7_gearing !== null && property.property_q_7_gearing !== undefined ? parseInt(property.property_q_7_gearing, 10) : null
       }));
     };
     
