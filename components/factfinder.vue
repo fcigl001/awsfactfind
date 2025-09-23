@@ -1499,7 +1499,7 @@ const responseMessage = computed(() => {
 const downLoadFF = () => {
   try {
     window.open(
-      url+"/storage/clientDocuments/" +
+      urlAPI + "/storage/clientDocuments/" +
         formId +
         "/" +
         responseURL.value,
@@ -1819,7 +1819,7 @@ const handleSubmit = async () => {
     console.log("📊 Response Headers:", response.headers);
     console.log("🚀 === API SUBMISSION MONITOR END ===");
     message = response.data.message;
-    responseURL.value = response.data.url; // DONT KNOW IF THIS IS CORRECT
+    responseURL.value = response.data.pdf_url; // DONT KNOW IF THIS IS CORRECT
     ok.value = true;
   } catch (error) {
     console.log("❌ === API ERROR MONITOR START ===");
