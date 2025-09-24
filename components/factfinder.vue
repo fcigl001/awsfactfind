@@ -132,10 +132,10 @@
         <StaticElement name="divider" tag="hr" />
         <ListElement
           name="property_list"
-          :add-text="hasPartnerData ? '+ Add partner\'s view (if different).' : ''"
+          add-text="+ Add partner's view (if different)."
           size="sm"
           :min="1"
-          :max="hasPartnerData ? 2 : 1"
+          :max="2"
           :initial="1"
         >
 
@@ -502,8 +502,8 @@
 
           <ListElement
           name="goals_list"
-          :add-text="hasPartnerData ? '+ Add partner\'s view if different' : ''"
-          :max="hasPartnerData ? 2 : 1"
+          add-text="+ Add partner's view if different"
+          :max="2"
           :min="1"
           :initial="1"
         >
@@ -1499,7 +1499,7 @@ const responseMessage = computed(() => {
 const downLoadFF = () => {
   try {
     window.open(
-      url+"/storage/clientDocuments/" +
+      urlAPI + "/storage/clientDocuments/" +
         formId +
         "/" +
         responseURL.value,
@@ -1595,23 +1595,23 @@ const handleSubmit = async () => {
     // Get all form data
     const formData = form$.value.data;
     
-    // Process property answers - ensure they're properly structured for FactFindController.php
+    // Process property answers - ensure they're properly structured for FactFindController.php with consistent integer types
     const processPropertyAnswers = (propertyList) => {
       if (!propertyList || !Array.isArray(propertyList)) return [];
       
       return propertyList.map((property, index) => ({
         applicant_number: index + 1,
-        property_q_1_familar: property.property_q_1_familar !== null && property.property_q_1_familar !== undefined ? property.property_q_1_familar.toString() : null,
-        property_q_2_growth: property.property_q_2_growth !== null && property.property_q_2_growth !== undefined ? property.property_q_2_growth.toString() : null,
-        property_q_3_wait: property.property_q_3_wait !== null && property.property_q_3_wait !== undefined ? property.property_q_3_wait.toString() : null,
+        property_q_1_familar: property.property_q_1_familar !== null && property.property_q_1_familar !== undefined ? parseInt(property.property_q_1_familar, 10) : null,
+        property_q_2_growth: property.property_q_2_growth !== null && property.property_q_2_growth !== undefined ? parseInt(property.property_q_2_growth, 10) : null,
+        property_q_3_wait: property.property_q_3_wait !== null && property.property_q_3_wait !== undefined ? parseInt(property.property_q_3_wait, 10) : null,
         property_q_4_type_preferences: property.property_q_4_type_preferences || null,
         property_q_4_types_of_investment: property.property_q_4_types_of_investment || null,
         property_q_4_investment_preference_comment: property.property_q_4_investment_preference_comment || null,
         property_q_5_location_preference: property.property_q_5_location_preference || null,
         property_q_5_preference_location_states: property.property_q_5_preference_location_states || null,
         property_q_5_preference_location_states_other: property.property_q_5_preference_location_states_other || null,
-        property_q_6_taxation: property.property_q_6_taxation !== null && property.property_q_6_taxation !== undefined ? property.property_q_6_taxation.toString() : null,
-        property_q_7_gearing: property.property_q_7_gearing !== null && property.property_q_7_gearing !== undefined ? property.property_q_7_gearing.toString() : null
+        property_q_6_taxation: property.property_q_6_taxation !== null && property.property_q_6_taxation !== undefined ? parseInt(property.property_q_6_taxation, 10) : null,
+        property_q_7_gearing: property.property_q_7_gearing !== null && property.property_q_7_gearing !== undefined ? parseInt(property.property_q_7_gearing, 10) : null
       }));
     };
     
@@ -1708,16 +1708,16 @@ const handleSubmit = async () => {
           })) : []
         },
         
-        // Property Section - CRITICAL: Ensure all property answers are saved
+        // Property Section - CRITICAL: Ensure all property answers are saved with consistent integer types
         property: {
           property_list: formData.property_list ? formData.property_list.map(property => ({
             ...property,
-            // Preserve numeric values as numbers, only convert to string if not null/undefined
-            property_q_1_familar: property.property_q_1_familar !== null && property.property_q_1_familar !== undefined ? property.property_q_1_familar : null,
-            property_q_2_growth: property.property_q_2_growth !== null && property.property_q_2_growth !== undefined ? property.property_q_2_growth : null,
-            property_q_3_wait: property.property_q_3_wait !== null && property.property_q_3_wait !== undefined ? property.property_q_3_wait : null,
-            property_q_6_taxation: property.property_q_6_taxation !== null && property.property_q_6_taxation !== undefined ? property.property_q_6_taxation : null,
-            property_q_7_gearing: property.property_q_7_gearing !== null && property.property_q_7_gearing !== undefined ? property.property_q_7_gearing : null
+            // Ensure all numeric values are consistently integers (not strings)
+            property_q_1_familar: property.property_q_1_familar !== null && property.property_q_1_familar !== undefined ? parseInt(property.property_q_1_familar, 10) : null,
+            property_q_2_growth: property.property_q_2_growth !== null && property.property_q_2_growth !== undefined ? parseInt(property.property_q_2_growth, 10) : null,
+            property_q_3_wait: property.property_q_3_wait !== null && property.property_q_3_wait !== undefined ? parseInt(property.property_q_3_wait, 10) : null,
+            property_q_6_taxation: property.property_q_6_taxation !== null && property.property_q_6_taxation !== undefined ? parseInt(property.property_q_6_taxation, 10) : null,
+            property_q_7_gearing: property.property_q_7_gearing !== null && property.property_q_7_gearing !== undefined ? parseInt(property.property_q_7_gearing, 10) : null
           })) : [],
           property_answers: processPropertyAnswers(formData.property_list)
         },
@@ -1819,7 +1819,7 @@ const handleSubmit = async () => {
     console.log("📊 Response Headers:", response.headers);
     console.log("🚀 === API SUBMISSION MONITOR END ===");
     message = response.data.message;
-    responseURL.value = response.data.url; // DONT KNOW IF THIS IS CORRECT
+    responseURL.value = response.data.pdf_url; // DONT KNOW IF THIS IS CORRECT
     ok.value = true;
   } catch (error) {
     console.log("❌ === API ERROR MONITOR START ===");
