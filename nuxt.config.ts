@@ -7,9 +7,6 @@ export default defineNuxtConfig({
       enabled: true
     }
   },
-  nitro: {
-    preset: 'aws-lambda' // ✅ key line to fix deploy-manifest runtime
-  },
   modules: [
     '@nuxtjs/tailwindcss',
     '@vueform/nuxt',
