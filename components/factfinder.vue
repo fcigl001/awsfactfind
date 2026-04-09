@@ -1491,7 +1491,7 @@ const tokenFromUrl = ref(null);
 var formId = "";
 var errorData = "";
 var message = "";
-
+// Download Fact Find code
 const responseMessage = computed(() => {
   console.log(ok.value);
   return ok.value;
@@ -1499,10 +1499,7 @@ const responseMessage = computed(() => {
 const downLoadFF = () => {
   try {
     window.open(
-      urlAPI + "/storage/clientDocuments/" +
-        formId +
-        "/" +
-        responseURL.value,
+      responseURL.value,
       "_blank"
     );
     ok.value = false;
@@ -2379,125 +2376,105 @@ const updateFinanceData = (data) => {
           }
         });
       }
-      
+
+      // Helper function to wait for select options to be available
+      const waitForSelectOptions = (selectElement, maxAttempts = 20, interval = 100) => {
+        return new Promise((resolve) => {
+          let attempts = 0;
+          const checkOptions = () => {
+            const options = selectElement.querySelectorAll('option');
+            if (options.length > 0) {
+              resolve(true);
+            } else if (attempts >= maxAttempts) {
+              console.warn('⏱️ Timeout waiting for select options');
+              resolve(false);
+            } else {
+              attempts++;
+              setTimeout(checkOptions, interval);
+            }
+          };
+          checkOptions();
+        });
+      };
+
       // Force DOM element updates for other assets
       if (financeUpdate.finance_other_assets_list && financeUpdate.finance_other_assets_list.length > 0) {
         console.log("🔧 Forcing DOM element updates for other assets...");
-        
-        financeUpdate.finance_other_assets_list.forEach((asset, index) => {
+
+        financeUpdate.finance_other_assets_list.forEach(async (asset, index) => {
           try {
             // Get the actual DOM elements and set their values directly
             const typeSelect = document.getElementById(`finance_other_assets_list.${index}.container2.column1.finance_other_asset_description`);
             const descriptionInput = document.getElementById(`finance_other_assets_list.${index}.container2.column2.finance_other_asset_description_name`);
             const amountInput = document.getElementById(`finance_other_assets_list.${index}.container2.column2.finance_other_asset_amount`);
             const otherDescInput = document.getElementById(`finance_other_assets_list.${index}.container2.column1.finance_other_asset_other_description`);
-            
+
             console.log(`Other Asset ${index + 1} DOM elements:`, {
               typeSelect: !!typeSelect,
               descriptionInput: !!descriptionInput,
               amountInput: !!amountInput,
               otherDescInput: !!otherDescInput
             });
-            
-            // Debug the select element structure
-            if (typeSelect) {
-              console.log(`🔍 Other Asset ${index + 1} Select Element Debug:`, {
-                tagName: typeSelect.tagName,
-                type: typeSelect.type,
-                value: typeSelect.value,
-                innerHTML: typeSelect.innerHTML.substring(0, 200) + '...',
-                classList: Array.from(typeSelect.classList),
-                parentElement: typeSelect.parentElement?.tagName
-              });
-            }
-            
-            // Try multiple approaches for select elements
+
+            // Set values directly on DOM elements - Special handling for select elements
             if (typeSelect && asset.finance_other_asset_description) {
               console.log(`🎯 Attempting to set other asset ${index + 1} type to: ${asset.finance_other_asset_description}`);
-              
-              // Approach 1: Direct value setting
-              typeSelect.value = asset.finance_other_asset_description;
-              typeSelect.dispatchEvent(new Event('change', { bubbles: true }));
-              typeSelect.dispatchEvent(new Event('input', { bubbles: true }));
-              
-              // Approach 2: Find and select option
-              const options = typeSelect.querySelectorAll('option');
-              console.log(`Available options for other asset ${index + 1}:`, Array.from(options).map(opt => ({ value: opt.value, text: opt.textContent })));
-              
-              let optionFound = false;
-              options.forEach(option => {
-                if (option.value === asset.finance_other_asset_description) {
-                  option.selected = true;
-                  optionFound = true;
-                  console.log(`✅ Found and selected option: ${option.value}`);
+
+              // Wait for options to be available
+              const optionsAvailable = await waitForSelectOptions(typeSelect);
+
+              if (optionsAvailable) {
+                const options = typeSelect.querySelectorAll('option');
+                let optionFound = false;
+
+                options.forEach(option => {
+                  if (option.value === asset.finance_other_asset_description) {
+                    option.selected = true;
+                    optionFound = true;
+                  }
+                });
+
+                if (optionFound) {
+                  typeSelect.value = asset.finance_other_asset_description;
+                  typeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                  typeSelect.dispatchEvent(new Event('input', { bubbles: true }));
+                  console.log(`✅ Set type for other asset ${index + 1}: ${asset.finance_other_asset_description}`);
+                } else {
+                  console.warn(`⚠️ Option not found for other asset ${index + 1}: ${asset.finance_other_asset_description}`);
+                  console.log('Available options:', Array.from(options).map(opt => opt.value));
                 }
-              });
-              
-              // Approach 3: Try using Vueform API if available
-              try {
-                const formElement = form$.value?.el$(`finance_other_assets_list.${index}.container2.column1.finance_other_asset_description`);
-                if (formElement) {
-                  console.log(`🔧 Using Vueform API for other asset ${index + 1}`);
-                  formElement.update(asset.finance_other_asset_description);
-                  console.log(`✅ Updated via Vueform API: ${asset.finance_other_asset_description}`);
-                }
-              } catch (vueformError) {
-                console.log(`⚠️ Vueform API approach failed for other asset ${index + 1}:`, vueformError.message);
               }
-              
-              // Verify the final value
-              setTimeout(() => {
-                console.log(`🔍 Final verification for other asset ${index + 1}: ${typeSelect.value}`);
-              }, 100);
-              
-              console.log(`✅ Set type for other asset ${index + 1}: ${asset.finance_other_asset_description} (found option: ${optionFound})`);
             }
-            
-            // Approach 4: Delayed retry for Vueform reactivity
-            setTimeout(() => {
-              if (typeSelect && asset.finance_other_asset_description && typeSelect.value !== asset.finance_other_asset_description) {
-                console.log(`🔄 Retrying other asset ${index + 1} type selection after delay...`);
-                typeSelect.value = asset.finance_other_asset_description;
-                typeSelect.dispatchEvent(new Event('change', { bubbles: true }));
-                typeSelect.dispatchEvent(new Event('input', { bubbles: true }));
-                
-                // Force focus and blur to trigger Vueform validation
-                typeSelect.focus();
-                typeSelect.blur();
-                
-                console.log(`🔄 Retry result for other asset ${index + 1}: ${typeSelect.value}`);
-              }
-            }, 200);
-            
+
             if (descriptionInput && asset.finance_other_asset_description_name) {
               descriptionInput.value = asset.finance_other_asset_description_name;
               descriptionInput.dispatchEvent(new Event('input', { bubbles: true }));
               console.log(`✅ Set description for other asset ${index + 1}: ${asset.finance_other_asset_description_name}`);
             }
-            
+
             if (amountInput && asset.finance_other_asset_amount) {
               amountInput.value = asset.finance_other_asset_amount;
               amountInput.dispatchEvent(new Event('input', { bubbles: true }));
               console.log(`✅ Set amount for other asset ${index + 1}: ${asset.finance_other_asset_amount}`);
             }
-            
+
             if (otherDescInput && asset.finance_other_asset_other_description) {
               otherDescInput.value = asset.finance_other_asset_other_description;
               otherDescInput.dispatchEvent(new Event('input', { bubbles: true }));
               console.log(`✅ Set other description for other asset ${index + 1}: ${asset.finance_other_asset_other_description}`);
             }
-            
+
           } catch (error) {
             console.error(`❌ Error updating DOM for other asset ${index + 1}:`, error);
           }
         });
       }
-      
+
       // Force DOM element updates for liabilities
       if (financeUpdate.finance_liabilities_list && financeUpdate.finance_liabilities_list.length > 0) {
         console.log("🔧 Forcing DOM element updates for liabilities...");
-        
-        financeUpdate.finance_liabilities_list.forEach((liability, index) => {
+
+        financeUpdate.finance_liabilities_list.forEach(async (liability, index) => {
           try {
             // Get the actual DOM elements and set their values directly
             const typeSelect = document.getElementById(`finance_liabilities_list.${index}.container3.column1.finance_liability_type`);
@@ -2505,7 +2482,7 @@ const updateFinanceData = (data) => {
             const balanceInput = document.getElementById(`finance_liabilities_list.${index}.container3.column3.finance_liability_balance`);
             const descriptionInput = document.getElementById(`finance_liabilities_list.${index}.container2.column1.finance_liability_description`);
             const repaymentInput = document.getElementById(`finance_liabilities_list.${index}.container2.column2.finance_liability_repayment`);
-            
+
             console.log(`Liability ${index + 1} DOM elements:`, {
               typeSelect: !!typeSelect,
               limitInput: !!limitInput,
@@ -2513,55 +2490,59 @@ const updateFinanceData = (data) => {
               descriptionInput: !!descriptionInput,
               repaymentInput: !!repaymentInput
             });
-            
+
             // Set values directly on DOM elements - Special handling for select elements
             if (typeSelect && liability.finance_liability_type !== undefined) {
-              // For select elements, we need to ensure the option exists and is selected
-              const options = typeSelect.querySelectorAll('option');
-              let optionFound = false;
-              
-              options.forEach(option => {
-                if (option.value == liability.finance_liability_type) { // Use == for type coercion
-                  option.selected = true;
-                  optionFound = true;
+              // Wait for options to be available
+              const optionsAvailable = await waitForSelectOptions(typeSelect);
+
+              if (optionsAvailable) {
+                const options = typeSelect.querySelectorAll('option');
+                let optionFound = false;
+
+                options.forEach(option => {
+                  if (option.value == liability.finance_liability_type) { // Use == for type coercion
+                    option.selected = true;
+                    optionFound = true;
+                  }
+                });
+
+                if (optionFound) {
+                  typeSelect.value = liability.finance_liability_type;
+                  typeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                  typeSelect.dispatchEvent(new Event('input', { bubbles: true }));
+                  console.log(`✅ Set type for liability ${index + 1}: ${liability.finance_liability_type}`);
+                } else {
+                  console.warn(`⚠️ Option not found for liability ${index + 1}: ${liability.finance_liability_type}`);
+                  console.log('Available options:', Array.from(options).map(opt => opt.value));
                 }
-              });
-              
-              if (optionFound) {
-                typeSelect.value = liability.finance_liability_type;
-                typeSelect.dispatchEvent(new Event('change', { bubbles: true }));
-                typeSelect.dispatchEvent(new Event('input', { bubbles: true }));
-                console.log(`✅ Set type for liability ${index + 1}: ${liability.finance_liability_type}`);
-              } else {
-                console.warn(`⚠️ Option not found for liability ${index + 1}: ${liability.finance_liability_type}`);
-                console.log('Available options:', Array.from(options).map(opt => opt.value));
               }
             }
-            
+
             if (limitInput && liability.finance_liability_limit) {
               limitInput.value = liability.finance_liability_limit;
               limitInput.dispatchEvent(new Event('input', { bubbles: true }));
               console.log(`✅ Set limit for liability ${index + 1}: ${liability.finance_liability_limit}`);
             }
-            
+
             if (balanceInput && liability.finance_liability_balance) {
               balanceInput.value = liability.finance_liability_balance;
               balanceInput.dispatchEvent(new Event('input', { bubbles: true }));
               console.log(`✅ Set balance for liability ${index + 1}: ${liability.finance_liability_balance}`);
             }
-            
+
             if (descriptionInput && liability.finance_liability_description) {
               descriptionInput.value = liability.finance_liability_description;
               descriptionInput.dispatchEvent(new Event('input', { bubbles: true }));
               console.log(`✅ Set description for liability ${index + 1}: ${liability.finance_liability_description}`);
             }
-            
+
             if (repaymentInput && liability.finance_liability_repayment) {
               repaymentInput.value = liability.finance_liability_repayment;
               repaymentInput.dispatchEvent(new Event('input', { bubbles: true }));
               console.log(`✅ Set repayment for liability ${index + 1}: ${liability.finance_liability_repayment}`);
             }
-            
+
           } catch (error) {
             console.error(`❌ Error updating DOM for liability ${index + 1}:`, error);
           }
